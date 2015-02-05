@@ -15,17 +15,44 @@ Author URI: http://mightybytes.com
 
 class LazyLoadXT {
 
-	function init() {
+	var $setting_groups = array(
+			'lazyloadxt-general' => array(
+					'title' => 'General Settings',
+					'settings' => array(
+						'lazyloadxt_min' => array('Minimize Scripts','checkbox'),
+						'lazyloadxt_extra' => array('Extras','checkbox'),
+					)
+				),
+			'lazyloadxt-addons' => array(
+					'title' => 'Addons Settings',
+					'settings' => array(
+						'lazyloadxt_fadein' => array('Fade In','checkbox'),
+						'lazyloadxt_spinner' => array('Spinner','checkbox'),
+					)
+				),
+			'lazyloadxt-effects' => array(
+					'title' => 'Effects Settings',
+					'settings' => array(
+						'lazyloadxt_script_based_tagging' => array('Script-based Tagging','checkbox'),
+						'lazyloadxt_responsive_images' => array('Responsive Images','checkbox'),
+						'lazyloadxt_print' => array('Print','checkbox'),
+						'lazyloadxt_background_image' => array('Background Image','checkbox'),
+						'lazyloadxt_deferred_load' => array('Deferred Load','checkbox'),
+					)
+				),
+		);
+
+	function __construct() {
 		if ( is_admin() ){ // admin actions
 			add_action( 'admin_menu', array($this,'admin_menu') );
 			add_action( 'admin_init', array($this,'register_settings') );
 		}
-		add_filter( 'the_content', array($this,'the_content_filter') );
+		//add_filter( 'the_content', array($this,'the_content_filter') );
 		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
-		add_action( 'wp_enqueue_scripts', array($this,'load_scripts') );
+		//add_action( 'wp_enqueue_scripts', array($this,'load_scripts') );
 	}
 	
-	function load_scripts() {
+	/*function load_scripts() {
 		//wp_enqueue_style( 'lazyloadxt-style', plugin_dir_url('css/jquery.lazyloadxt.fadein.css'), false, '1.0.6' );
 		wp_enqueue_script( 'lazyloadxt-script', plugin_dir_url('js/jquery.lazyloadxt.min.js'), array( 'jquery' ), '1.0.6' );
 	}
@@ -82,35 +109,65 @@ class LazyLoadXT {
 	    $html = $before . $html . $after;
 
 	    return $html;
-	}
+	}*/
 
 	function admin_menu() {
-		add_options_page('Lazy Load XT Settings', 'Lazy Load XT', 'administrator',$this,array($this,'settings_page'));
+		add_options_page('Lazy Load XT Settings', 'Lazy Load XT', 'administrator','lazyloadxt',array($this,'settings_page'));
 	}
 
 	function register_settings() {
-		register_setting('lazyloadxt','min');
-		register_setting('lazyloadxt','extra');
-		register_setting('lazyloadxt','script-based-tagging');
-		register_setting('lazyloadxt','responsive-images');
-		register_setting('lazyloadxt','print');
-		register_setting('lazyloadxt','background-image');
-		register_setting('lazyloadxt','deferred-load');
+		
+		$setting_groups = $this->setting_groups;
+
+		foreach ($setting_groups as $group => $settings) {
+			add_settings_section(
+		        $group,         // ID used to identify this section and with which to register options
+		        $settings['title'],                  // Title to be displayed on the administration page
+		        array($this,'settings_section_callback'), // Callback used to render the description of the section
+		        'lazyloadxt'                           // Page on which to add this section of options
+		    );
+			foreach ($settings['settings'] as $setting => $setting_args) {
+				register_setting('lazyloadxt',$setting);
+				add_settings_field (
+					$setting,
+					$setting_args[0],
+					array($this,'form_field'),
+					'lazyloadxt',
+					$group,
+					array(
+						'id' => $setting,
+						'type' => $setting_args[1]
+					)
+				);
+			}
+
+		}
+
+	}
+
+	function settings_section_callback($args) {
+		//var_dump($args);
+	}
+
+	function form_field($args) {
+		//var_dump($args);
+		if ($args['type'] == 'checkbox') {
+			$val = (get_option($args['id'])) ? 'checked="checked' : '';
+			var_dump($val);
+			echo '<input type="checkbox" value="1" '.$val.' />';
+		}
 	}
 
 	function settings_page() {
-		?>
-        // Set class property
-        $this->options = get_option( 'lazyloadxt' );
         ?>
         <div class="wrap">
             <?php screen_icon(); ?>
-            <h2>My Settings</h2>           
+            <h2>Lazy Load XT Settings</h2>           
             <form method="post" action="options.php">
             <?php
                 // This prints out all hidden setting fields
-                settings_fields( 'lazyloadxt' );   
-                do_settings_sections( 'my-setting-admin' );
+                settings_fields( 'lazyloadxt' ); 
+                do_settings_sections( 'lazyloadxt' );
                 submit_button(); 
             ?>
             </form>
@@ -120,5 +177,5 @@ class LazyLoadXT {
 
 }
 
-LazyLoadXT->init();
+new LazyLoadXT;
 
