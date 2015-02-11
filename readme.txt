@@ -13,7 +13,7 @@ Lazy Load images, videos, iframes and more using Lazy Load XT.
 
 Lazy load images, YouTube and Vimeo videos, and iframes using [Lazy Load XT](https://github.com/ressio/lazy-load-xt).
 
-This plugin works by loading the Lazy Load XT script from a CDN and replacing the `src` attributes with `data-src` when the content of a post or page is loaded on the front end of a WordPress site.
+This plugin works by loading the Lazy Load XT script and replacing the `src` attributes with `data-src` when the content of a post or page is loaded on the front end of a WordPress site.
 
 == Installation ==
 
