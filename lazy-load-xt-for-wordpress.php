@@ -1,15 +1,16 @@
 <?php
 /**
- * @package Lazy_Load_XT_for_WordPress
+ * @package Lazy_Load_XT
  * @version 0.1
  */
 /*
 Plugin Name: Lazy Load XT for WordPress
-Plugin URI: http://wordpress.org/plugins/lazy-load-xt-for-wordpress/
+Plugin URI: http://wordpress.org/plugins/lazy-load-xt/
 Description: Lazy load post images using Lazy Load XT
 Author: Davo Hynds
-Version: 0.1
 Author URI: http://mightybytes.com
+Version: 0.1
+Text Domain: lazy-load-xt
 */
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
@@ -66,7 +67,7 @@ class LazyLoadXT {
 	
 	function load_scripts() {
 		//wp_enqueue_style( 'lazyloadxt-style', plugin_dir_url('css/jquery.lazyloadxt.fadein.css'), false, '1.0.6' );
-		wp_enqueue_script( 'lazyloadxt-script', plugin_dir_url(__FILE__).'js/jquery.lazyloadxt.min.js', array( 'jquery' ), '1.0.6' );
+		wp_enqueue_script( 'lazy-load-xt-script', plugin_dir_url(__FILE__).'js/jquery.lazyloadxt.min.js', array( 'jquery' ), '1.0.6' );
 	}
 
 	function the_content_filter($content) {
