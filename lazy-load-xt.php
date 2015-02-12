@@ -15,6 +15,7 @@ Text Domain: lazy-load-xt
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+
 class LazyLoadXT {
 
 	/*var $setting_groups = array(
@@ -63,6 +64,12 @@ class LazyLoadXT {
 		add_filter( 'the_content', array($this,'the_content_filter') );
 		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
 		add_action( 'wp_enqueue_scripts', array($this,'load_scripts') );
+		
+		if (is_admin()) {
+			require 'settings.php';
+			new LazyLoadXTSettings;
+		}
+
 	}
 	
 	function load_scripts() {
@@ -207,4 +214,5 @@ class LazyLoadXT {
 }
 
 new LazyLoadXT;
+
 
