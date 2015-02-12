@@ -32,7 +32,7 @@ class LazyLoadXT {
 		if (is_admin()) {
 			require 'settings.php';
 			$settingsClass = new LazyLoadXTSettings;
-			register_activation_hook(__FILE__,array($settings,'first_time_activation'));
+			register_activation_hook(__FILE__,array($settingsClass,'first_time_activation'));
 		}
 
 		$this->settings = $this->get_settings();

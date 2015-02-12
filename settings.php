@@ -7,7 +7,6 @@ class LazyLoadXTSettings {
 	public function __construct() {
 		add_action( 'admin_menu', array($this,'lazyloadxt_add_admin_menu') );
 		add_action( 'admin_init', array($this,'lazyloadxt_settings_init') );
-
 	}
 
 	function first_time_activation() {
@@ -243,19 +242,19 @@ class LazyLoadXTSettings {
 
 	function lazyloadxt_general_section_callback() { 
 
-		_e( 'General section description', 'lazy-load-xt' );
+		//_e( 'General section description', 'lazy-load-xt' );
 
 	}
 
 	function lazyloadxt_effects_section_callback() { 
 
-		_e( 'Effects section description', 'lazy-load-xt' );
+		//_e( 'Effects section description', 'lazy-load-xt' );
 
 	}
 
 	function lazyloadxt_addons_section_callback() { 
 
-		_e( 'Plugin settings description', 'lazy-load-xt' );
+		//_e( 'Plugin settings description', 'lazy-load-xt' );
 
 	}
 
@@ -267,7 +266,6 @@ class LazyLoadXTSettings {
 			<h2>Lazy Load XT</h2>
 			<form action='options.php' method='post'>
 				<?php
-
 				settings_fields( 'generalSettings' );
 				do_settings_sections( 'generalSettings' );
 				submit_button();
