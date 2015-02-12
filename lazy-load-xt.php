@@ -68,6 +68,7 @@ class LazyLoadXT {
 		if (is_admin()) {
 			require 'settings.php';
 			new LazyLoadXTSettings;
+			register_activation_hook(__FILE__,array('LazyLoadXTSettings','first_time_activation'));
 		}
 
 	}
