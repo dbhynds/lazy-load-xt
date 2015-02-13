@@ -158,7 +158,13 @@ class LazyLoadXTSettings {
 		?>
 		<div class="wrap">
 			<h2><?php _e('Lazy Load XT'); ?></h2>
-			<form action='options.php' method='post'>
+			<ul class="subsubsub" style='overflow: auto;'>
+				<li class="basic"><a href="#basic" class="basic">Basic Settings</a> |</li>
+				<li class="advanced"><a href="#advanced" class="advanced">Advanced Settings</a></li>
+			</ul>
+			<br />
+			<br />
+			<form id="basic" action='options.php' method='post' style='clear:both;'>
 				<?php
 				settings_fields( 'basicSettings' );
 				do_settings_sections( 'basicSettings' );
