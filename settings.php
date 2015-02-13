@@ -22,268 +22,146 @@ class LazyLoadXTSettings {
 
 	function lazyloadxt_settings_init() {
 
-		register_setting( 'generalSettings', 'lazyloadxt_general' );
-		register_setting( 'effects', 'lazyloadxt_effects' );
-		register_setting( 'addOns', 'lazyloadxt_addons' );
+		register_setting( 'basicSettings', 'lazyloadxt_general' );
+		register_setting( 'basicSettings', 'lazyloadxt_effects' );
+		register_setting( 'basicSettings', 'lazyloadxt_addons' );
 
 		add_settings_section(
-			'lazyloadxt_general_section',
+			'lazyloadxt_basic_section',
 			__( 'General Settings', 'lazy-load-xt' ),
-			array($this,'lazyloadxt_general_section_callback'),
-			'generalSettings'
+			array($this,'lazyloadxt_basic_section_callback'),
+			'basicSettings'
 		);
 
-		add_settings_section(
-			'lazyloadxt_effects_section',
+		add_settings_field( 
+			'lazyloadxt_general',
+			__( 'Basics', 'lazy-load-xt' ),
+			array($this,'lazyloadxt_general_render'),
+			'basicSettings',
+			'lazyloadxt_basic_section' 
+		);
+
+		add_settings_field( 
+			'lazyloadxt_effects',
 			__( 'Effects', 'lazy-load-xt' ),
-			array($this,'lazyloadxt_effects_section_callback'),
-			'effects'
-		);
-
-		add_settings_section(
-			'lazyloadxt_addons_section',
-			__( 'Add Ons', 'lazy-load-xt' ),
-			array($this,'lazyloadxt_addons_section_callback'),
-			'addOns'
-		);
-
-
-
-		add_settings_field( 
-			'lazyloadxt_minimize_scripts',
-			__( 'Load minimized scripts', 'lazy-load-xt' ),
-			array($this,'lazyloadxt_minimize_scripts_render'),
-			'generalSettings',
-			'lazyloadxt_general_section' 
+			array($this,'lazyloadxt_effects_render'),
+			'basicSettings',
+			'lazyloadxt_basic_section' 
 		);
 
 		add_settings_field( 
-			'lazyloadxt_load_extras',
-			__( 'Load "extras" version', 'lazy-load-xt' ),
-			array($this,'lazyloadxt_load_extras_render'),
-			'generalSettings',
-			'lazyloadxt_general_section' 
+			'lazyloadxt_addons',
+			__( 'Addons', 'lazy-load-xt' ),
+			array($this,'lazyloadxt_addons_render'),
+			'basicSettings',
+			'lazyloadxt_basic_section' 
 		);
-
-		add_settings_field( 
-			'lazyloadxt_fade_in',
-			__( 'Fade objects in on load', 'lazy-load-xt' ),
-			array($this,'lazyloadxt_fade_in_render'),
-			'effects',
-			'lazyloadxt_effects_section' 
-		);
-
-		add_settings_field( 
-			'lazyloadxt_spinner',
-			__( 'Show spinner as objects are loading', 'lazy-load-xt' ),
-			array($this,'lazyloadxt_spinner_render'),
-			'effects',
-			'lazyloadxt_effects_section' 
-		);
-
-		/*add_settings_field( 
-			'lazyloadxt_script_based_tagging',
-			__( 'Script-based tagging', 'lazy-load-xt' ),
-			array($this,'lazyloadxt_script_based_tagging_render'),
-			'addOns',
-			'lazyloadxt_addons_section' 
-		);
-
-		add_settings_field( 
-			'lazyloadxt_responsive_images',
-			__( 'Responsive images', 'lazy-load-xt' ),
-			array($this,'lazyloadxt_responsive_images_render'),
-			'addOns',
-			'lazyloadxt_addons_section' 
-		);*/
-
-		add_settings_field( 
-			'lazyloadxt_print',
-			__( 'Print', 'lazy-load-xt' ),
-			array($this,'lazyloadxt_print_render'),
-			'addOns',
-			'lazyloadxt_addons_section' 
-		);
-
-		/*add_settings_field( 
-			'lazyloadxt_background_image',
-			__( 'Lazy load background images', 'lazy-load-xt' ),
-			array($this,'lazyloadxt_background_image_render'),
-			'addOns',
-			'lazyloadxt_addons_section' 
-		);*/
-
-		add_settings_field( 
-			'lazyloadxt_deferred_load',
-			__( 'Defer loading script', 'lazy-load-xt' ),
-			array($this,'lazyloadxt_deferred_load_render'),
-			'addOns',
-			'lazyloadxt_addons_section' 
-		);
-
 
 	}
 
 
-	function lazyloadxt_minimize_scripts_render() { 
+
+	function lazyloadxt_general_render() {
 
 		$options = get_option( 'lazyloadxt_general' );
 		?>
-		<label for="lazyloadxt_minimize_scripts">
-			<input type='checkbox' id='lazyloadxt_minimize_scripts' name='lazyloadxt_general[lazyloadxt_minimize_scripts]' <?php checked( $options['lazyloadxt_minimize_scripts'], 1 ); ?> value='1'>
-			Load minimized versions of javascript and css files.
-		</label>
+		<fieldset>
+			<legend class="screen-reader-text">
+				<span><?php _e('Basic settings','lazy-load-xt'); ?></span>
+			</legend>
+			<label for="lazyloadxt_minimize_scripts">
+				<input type='checkbox' id='lazyloadxt_minimize_scripts' name='lazyloadxt_general[lazyloadxt_minimize_scripts]' <?php checked( $options['lazyloadxt_minimize_scripts'], 1 ); ?> value='1'>
+				<?php _e('Load minimized versions of javascript and css files.','lazy-load-xt'); ?>
+			</label>
+			<br />
+			<label for="lazyloadxt_load_extras">
+				<input type='checkbox' id='lazyloadxt_load_extras' name='lazyloadxt_general[lazyloadxt_load_extras]' <?php checked( $options['lazyloadxt_load_extras'], 1 ); ?> value='1'>
+				<?php _e('Lazy load YouTube and Vimeo videos, iframes, audio, etc.','lazy-load-xt'); ?>
+			</label>
+		</fieldset>
 		<?php
 
 	}
 
-
-	function lazyloadxt_load_extras_render() { 
-
-		$options = get_option( 'lazyloadxt_general' );
-		?>
-		<label for="lazyloadxt_load_extras">
-			<input type='checkbox' id='lazyloadxt_load_extras' name='lazyloadxt_general[lazyloadxt_load_extras]' <?php checked( $options['lazyloadxt_load_extras'], 1 ); ?> value='1'>
-			Lazy load YouTube and Vimeo videos, iframes, audio, etc.
-		</label>
-		<?php
-
-	}
-
-
-	function lazyloadxt_fade_in_render() { 
+	function lazyloadxt_effects_render() {
 
 		$options = get_option( 'lazyloadxt_effects' );
 		?>
-		<label for="lazyloadxt_fade_in">
-			<input type='checkbox' id='lazyloadxt_fade_in' name='lazyloadxt_effects[lazyloadxt_fade_in]' <?php checked( $options['lazyloadxt_fade_in'], 1 ); ?> value='1'>
-			Fade in lazy loaded objects
-		</label>
+		<fieldset>
+			<legend class="screen-reader-text">
+				<span><?php _e('Effects settings','lazy-load-xt'); ?></span>
+			</legend>
+			<label for="lazyloadxt_fade_in">
+				<input type='checkbox' id='lazyloadxt_fade_in' name='lazyloadxt_effects[lazyloadxt_fade_in]' <?php checked( $options['lazyloadxt_fade_in'], 1 ); ?> value='1'>
+				<?php _e('Fade in lazy loaded objects','lazy-load-xt'); ?>
+			</label>
+			<br />
+			<label for="lazyloadxt_spinner">
+				<input type='checkbox' id='lazyloadxt_spinner' name='lazyloadxt_effects[lazyloadxt_spinner]' <?php checked( $options['lazyloadxt_spinner'], 1 ); ?> value='1'>
+				<?php _e('Show spinner while objects are loading','lazy-load-xt'); ?>
+			</label>
+		</fieldset>
+		<?php
+
+	}
+
+	function lazyloadxt_addons_render() {
+
+		$options = get_option( 'lazyloadxt_addons' ); ?>
+		<fieldset>
+			<legend class="screen-reader-text">
+				<span><?php _e('Addons settings','lazy-load-xt'); ?></span>
+			</legend>
+			<?php /* ?>
+			<label for="lazyloadxt_script_based_tagging">
+				<input type='checkbox' id='lazyloadxt_script_based_tagging' name='lazyloadxt_addons[lazyloadxt_script_based_tagging]' <?php checked( $options['lazyloadxt_script_based_tagging'], 1 ); ?> value='1'>
+
+			</label>
+			<br />
+			<label for="lazyloadxt_responsive_images">
+				<input type='checkbox' id='lazyloadxt_responsive_images' name='lazyloadxt_addons[lazyloadxt_responsive_images]' <?php checked( $options['lazyloadxt_responsive_images'], 1 ); ?> value='1'>
+			</label>
+			<br />
+			<?php */ ?>
+			<label for="lazyloadxt_print">
+				<input type='checkbox' id='lazyloadxt_print' name='lazyloadxt_addons[lazyloadxt_print]' <?php checked( $options['lazyloadxt_print'], 1 ); ?> value='1'>
+				<?php _e('Make sure lazy loaded elements appear in the print view','lazy-load-xt'); ?>
+			</label>
+			<br />
+			<?php /* ?>
+			<label for="lazyloadxt_background_image">
+				<input type='checkbox' id='lazyloadxt_background_image' name='lazyloadxt_addons[lazyloadxt_background_image]' <?php checked( $options['lazyloadxt_background_image'], 1 ); ?> value='1'>
+			</label>
+			<br />
+			<?php */ ?>
+			<label for="lazyloadxt_deferred_load">
+				<input type='checkbox' id='lazyloadxt_deferred_load' name='lazyloadxt_addons[lazyloadxt_deferred_load]' <?php checked( $options['lazyloadxt_deferred_load'], 1 ); ?> value='1'>
+				<?php _e('Defer loading of objects by 50ms','lazy-load-xt'); ?>
+			</label>
+		</fieldset>
 		<?php
 
 	}
 
 
-	function lazyloadxt_spinner_render() { 
+	function lazyloadxt_basic_section_callback() { 
 
-		$options = get_option( 'lazyloadxt_effects' );
-		?>
-		<label for="lazyloadxt_spinner">
-			<input type='checkbox' id='lazyloadxt_spinner' name='lazyloadxt_effects[lazyloadxt_spinner]' <?php checked( $options['lazyloadxt_spinner'], 1 ); ?> value='1'>
-			Show spinner while objects are loading
-		</label>
-		<?php
+		_e( 'Customize the basic features of Lazy Load XT.', 'lazy-load-xt' );
 
 	}
 
-
-	/*function lazyloadxt_script_based_tagging_render() { 
-
-		$options = get_option( 'lazyloadxt_addons' );
-		?>
-		<label for="lazyloadxt_script_based_tagging">
-			<input type='checkbox' id='lazyloadxt_script_based_tagging' name='lazyloadxt_addons[lazyloadxt_script_based_tagging]' <?php checked( $options['lazyloadxt_script_based_tagging'], 1 ); ?> value='1'>
-
-		</label>
-		<?php
-
-	}
-
-
-	function lazyloadxt_responsive_images_render() { 
-
-		$options = get_option( 'lazyloadxt_addons' );
-		?>
-		<label for="lazyloadxt_responsive_images">
-			<input type='checkbox' id='lazyloadxt_responsive_images' name='lazyloadxt_addons[lazyloadxt_responsive_images]' <?php checked( $options['lazyloadxt_responsive_images'], 1 ); ?> value='1'>
-		</label>
-		<?php
-
-	}*/
-
-
-	function lazyloadxt_print_render() { 
-
-		$options = get_option( 'lazyloadxt_addons' );
-		?>
-		<label for="lazyloadxt_print">
-			<input type='checkbox' id='lazyloadxt_print' name='lazyloadxt_addons[lazyloadxt_print]' <?php checked( $options['lazyloadxt_print'], 1 ); ?> value='1'>
-			Make sure lazy loaded elements appear in the print view
-		</label>
-		<?php
-
-	}
-
-
-	/*function lazyloadxt_background_image_render() { 
-
-		$options = get_option( 'lazyloadxt_addons' );
-		?>
-		<label for="lazyloadxt_background_image">
-			<input type='checkbox' id='lazyloadxt_background_image' name='lazyloadxt_addons[lazyloadxt_background_image]' <?php checked( $options['lazyloadxt_background_image'], 1 ); ?> value='1'>
-		</label>
-		<?php
-
-	}*/
-
-
-	function lazyloadxt_deferred_load_render() { 
-
-		$options = get_option( 'lazyloadxt_addons' );
-		?>
-		<label for="lazyloadxt_deferred_load">
-			<input type='checkbox' id='lazyloadxt_deferred_load' name='lazyloadxt_addons[lazyloadxt_deferred_load]' <?php checked( $options['lazyloadxt_deferred_load'], 1 ); ?> value='1'>
-			Defer loading of objects by 50ms
-		</label>
-		<?php
-
-	}
-
-
-	function lazyloadxt_general_section_callback() { 
-
-		//_e( 'General section description', 'lazy-load-xt' );
-
-	}
-
-	function lazyloadxt_effects_section_callback() { 
-
-		//_e( 'Effects section description', 'lazy-load-xt' );
-
-	}
-
-	function lazyloadxt_addons_section_callback() { 
-
-		//_e( 'Plugin settings description', 'lazy-load-xt' );
-
-	}
+	
 
 
 	function settings_page() { 
 
 		?>
 		<div class="wrap">
-			<h2>Lazy Load XT</h2>
+			<h2><?php _e('Lazy Load XT'); ?></h2>
 			<form action='options.php' method='post'>
 				<?php
-				settings_fields( 'generalSettings' );
-				do_settings_sections( 'generalSettings' );
-				submit_button();
-				?>
-			</form>
-			<hr />
-			<form action='options.php' method='post'>
-				<?php
-				settings_fields( 'effects' );
-				do_settings_sections( 'effects' );
-				submit_button();
-				?>
-			</form>
-			<hr />
-			<form action='options.php' method='post'>
-				<?php
-				settings_fields( 'addOns' );
-				do_settings_sections( 'addOns' );
+				settings_fields( 'basicSettings' );
+				do_settings_sections( 'basicSettings' );
 				submit_button();
 				?>
 			</form>

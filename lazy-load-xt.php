@@ -26,6 +26,8 @@ class LazyLoadXT {
 	function __construct() {
 		
 		add_filter( 'the_content', array($this,'the_content_filter') );
+		add_filter( 'wp_get_attachment_image_attributes', array($this,'wp_get_attachment_image_attributes_filter') );
+		
 		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
 		add_action( 'wp_enqueue_scripts', array($this,'load_scripts') );
 		
@@ -39,7 +41,6 @@ class LazyLoadXT {
 		$this->dir = plugin_dir_url(__FILE__);
 
 	}
-
 
 
 	function get_settings() {
@@ -154,8 +155,17 @@ class LazyLoadXT {
 	    return $html;
 	}*/
 
+
+	function wp_get_attachment_image_attributes_filter($attr) {
+		$attr['data-src'] = $attr['src'];
+		unset($attr['src']);
+		return $attr;
+	}
+
 }
 
 new LazyLoadXT;
+
+
 
 
