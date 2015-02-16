@@ -25,6 +25,12 @@ class LazyLoadXT {
 
 	function __construct() {
 		
+		/*if ( intval( get_query_var( 'print' ) ) == 1 ||
+			intval( get_query_var( 'printpage' ) ) == 1 || 
+			strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mini' ) !== false ) {
+				return;
+		}*/
+
 		add_filter( 'the_content', array($this,'the_content_filter') );
 		add_filter( 'wp_get_attachment_image_attributes', array($this,'wp_get_attachment_image_attributes_filter') );
 		
