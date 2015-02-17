@@ -45,6 +45,10 @@ class LazyLoadXT {
 
 		$this->settings = $this->get_settings();
 		$this->dir = plugin_dir_url(__FILE__);
+		if ( $this->settings['advanced'] ) {
+			add_action( 'wp_head', array($this,'print_scripts') );
+		}
+		
 
 	}
 
@@ -54,6 +58,7 @@ class LazyLoadXT {
 		$general = get_option('lazyloadxt_general');
 		$effects = get_option('lazyloadxt_effects');
 		$addons = get_option('lazyloadxt_addons');
+		$advanced = get_option('lazyloadxt_advanced');
 
 		$settings_arr = array(
 				'minimize_scripts',
@@ -80,6 +85,18 @@ class LazyLoadXT {
 			}
 			$settings[$setting] = $return;
 		}
+
+		
+		if ($advanced['lazyloadxt_enabled']) {
+			foreach ($advanced as $key => $val) {
+				if ( $key != 'lazyloadxt_enabled' ) {
+					$settings['advanced'][str_replace('lazyloadxt_','',$key)] = $val;
+				}
+			}
+		} else {
+			$settings['advanced'] = false;
+		}
+		
 		return $settings;
 
 	}
@@ -116,6 +133,18 @@ class LazyLoadXT {
 			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
 		}
 		
+	}
+
+	function print_scripts() {
+		?>
+		<script type="text/javascript">
+			jQuery.extend(jQuery.lazyLoadXT, { <?php
+				foreach ($this->settings['advanced'] as $key => $val) {
+					echo "$key : '$val', ";
+				}
+			?> } );
+		</script>
+		<?php
 	}
 
 	function the_content_filter($content) {
