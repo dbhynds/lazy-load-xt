@@ -113,12 +113,16 @@ class LazyLoadXT {
 	}
 
 	function the_content_filter($content) {
-		$newcontent = $content;
-		$newcontent = $this->switch_src_for_data_src($newcontent,'img');
-		if ($this->settings['load_extras']) {
-			$newcontent = $this->switch_src_for_data_src($newcontent,'iframe');
+		if (strlen($content)) {
+			$newcontent = $content;
+			$newcontent = $this->switch_src_for_data_src($newcontent,'img');
+			if ($this->settings['load_extras']) {
+				$newcontent = $this->switch_src_for_data_src($newcontent,'iframe');
+			}
+			return $newcontent;
+		} else {
+			return $content;
 		}
-		return $newcontent;
 	}
 
 	function switch_src_for_data_src($content,$tag) {
