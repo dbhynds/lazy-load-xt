@@ -19,6 +19,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class LazyLoadXT {
 	
 	protected $dir; // Plugin directory
+	protected $ver = '0.1.0'; // Plugin version
 	protected $lazyloadxt_ver = '1.0.6'; // Version of Lazy Load XT (the script, not this plugin)
 	protected $settingsClass; // Settings class for admin area
 	protected $settings; // Settings for this plugin
@@ -34,6 +35,8 @@ class LazyLoadXT {
 		// Store our settings in memory to reduce mysql calls
 		$this->settings = $this->get_settings();
 		$this->dir = plugin_dir_url(__FILE__);
+
+		//$this->check_version();
 		
 		// If we're in the admin area, load the settings class
 		if (is_admin()) {
@@ -42,8 +45,6 @@ class LazyLoadXT {
 			// If this is the first time we've enabled the plugin, setup default settings
 			register_activation_hook(__FILE__,array($settingsClass,'first_time_activation'));
 		}
-
-		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
 		
 		// Enqueue Lazy Load XT scripts and styles
 		add_action( 'wp_enqueue_scripts', array($this,'load_scripts') );
@@ -58,11 +59,12 @@ class LazyLoadXT {
 		if ($this->settings['thumbnails']) {
 			add_filter( 'wp_get_attachment_image_attributes', array($this,'wp_get_attachment_image_attributes_filter') );
 		}
+
+		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
 		
 		
 
 	}
-
 
 	function get_settings() {
 
@@ -118,6 +120,11 @@ class LazyLoadXT {
 		// Return the settings
 		return $settings;
 
+	}
+
+	function check_version() {
+		if (version_compare($this->ver, $this->settings['version']) == 1) {
+		}
 	}
 
 
