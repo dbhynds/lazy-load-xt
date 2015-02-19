@@ -263,17 +263,17 @@ class LazyLoadXTSettings extends LazyLoadXT {
 			*/ ?>
 			<label for="lazyloadxt_edgeY">
 				<input type='number' id='lazyloadxt_edgeY' name='lazyloadxt_advanced[lazyloadxt_edgeY]' value="<?php echo $options['lazyloadxt_edgeY']; ?>">
-				<p class="description"><?php _e('edgeY','lazy-load-xt'); ?></p>
+				<p class="description"><strong>edgeY:</strong> <?php _e('Expand visible page area (viewport) in vertical direction by specified amount of pixels, so that elements start to load even if they are not visible, but will be visible after scroll by edgeY pixels','lazy-load-xt'); ?></p>
 			</label>
 			<br />
 			<label for="lazyloadxt_edgeX">
 				<input type='number' id='lazyloadxt_edgeX' name='lazyloadxt_advanced[lazyloadxt_edgeX]' value="<?php echo $options['lazyloadxt_edgeX']; ?>">
-				<p class="description"><?php _e('edgeX','lazy-load-xt'); ?></p>
+				<p class="description"><strong>edgeX:</strong> <?php _e('Expand visible page area in horizontal direction by specified amount of pixels','lazy-load-xt'); ?></p>
 			</label>
 			<br />
 			<label for="lazyloadxt_throttle">
 				<input type='number' id='lazyloadxt_throttle' name='lazyloadxt_advanced[lazyloadxt_throttle]' value="<?php echo $options['lazyloadxt_throttle']; ?>">
-				<p class="description"><?php _e('throttle','lazy-load-xt'); ?></p>
+				<p class="description"><strong>throttle:</strong> <?php _e('Time interval (in ms) to check for visible elements, the plugin uses it to speed up page work in the case of flow of page change events.','lazy-load-xt'); ?></p>
 			</label>
 			<?php /*
 			<br />
@@ -361,8 +361,8 @@ class LazyLoadXTSettings extends LazyLoadXT {
 	}
 
 	function lazyloadxt_advanced_section_callback() { 
-
-		_e( 'Customize the advanced features of Lazy Load XT.', 'lazy-load-xt' );
+		_e( 'Customize the advanced features of Lazy Load XT. ', 'lazy-load-xt' );
+		_e( 'Visit <a href="https://github.com/ressio/lazy-load-xt">Lazy Load XT</a> on GitHub for a detailed explanation.', 'lazy-load-xt' );
 
 	}
 

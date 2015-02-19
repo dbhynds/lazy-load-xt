@@ -176,23 +176,31 @@ class LazyLoadXT {
 	}
 
 	function the_content_filter($content) {
+		// If there's anything there, replace the 'src' with 'data-src'
 		if (strlen($content)) {
 			$newcontent = $content;
+			// Replace 'src' with 'data-src' on images
 			$newcontent = $this->switch_src_for_data_src($newcontent,'img');
+			// If enabled, replace 'src' with 'data-src' on iframes
 			if ($this->settings['load_extras']) {
 				$newcontent = $this->switch_src_for_data_src($newcontent,'iframe');
 			}
 			return $newcontent;
 		} else {
+			// Otherwise, carry on
 			return $content;
 		}
 	}
 
 	function switch_src_for_data_src($content,$tag) {
+		// Make a new DOMDoc
 		$doc = new DOMDocument();
+		// Load it up
 		$doc->LoadHTML($content);
+		// Get the elements we need to switch the src for
 		$elements = $doc->getElementsByTagName($tag);
 
+		// Switch out the 'src' with 'data-src'
 		foreach ($elements as $element) {
 			$src = $element->getAttribute('src');
 			// Remove the existing attributes.
@@ -201,11 +209,15 @@ class LazyLoadXT {
 			$element->setAttribute('data-src', $src);
 		}
 
+		// Prep for return
 		$return = new DOMDocument();
+		// Get the contents of the body tag
 		$body = $doc->getElementsByTagName('body')->item(0);
+		// Append them to the $return
 		foreach ($body->childNodes as $child){
 		    $return->appendChild($return->importNode($child, true));
 		}
+		// And we're done
 		return $return->saveHTML();
 	}
 
@@ -224,6 +236,7 @@ class LazyLoadXT {
 
 
 	function wp_get_attachment_image_attributes_filter($attr) {
+		// Change the attribute 'src' to 'data-src'
 		$attr['data-src'] = $attr['src'];
 		unset($attr['src']);
 		return $attr;
@@ -231,6 +244,7 @@ class LazyLoadXT {
 
 }
 
+// Init
 new LazyLoadXT;
 
 
