@@ -18,10 +18,10 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class LazyLoadXT {
 	
-	protected $dir;
-	protected $lazyloadxt_ver = '1.0.6';
-	protected $settingsClass;
-	protected $settings;
+	protected $dir; // Plugin directory
+	protected $lazyloadxt_ver = '1.0.6'; // Version of Lazy Load XT (the script, not this plugin)
+	protected $settingsClass; // Settings class for admin area
+	protected $settings; // Settings for this plugin
 
 	function __construct() {
 		
@@ -30,24 +30,35 @@ class LazyLoadXT {
 			strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mini' ) !== false ) {
 				return;
 		}*/
-
-		add_filter( 'the_content', array($this,'the_content_filter') );
-		add_filter( 'wp_get_attachment_image_attributes', array($this,'wp_get_attachment_image_attributes_filter') );
 		
-		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
-		add_action( 'wp_enqueue_scripts', array($this,'load_scripts') );
-		
+		// If we're in the admin area, load the settings class
 		if (is_admin()) {
 			require 'settings.php';
 			$settingsClass = new LazyLoadXTSettings;
+			// If this is the first time we've enabled the plugin, setup default settings
 			register_activation_hook(__FILE__,array($settingsClass,'first_time_activation'));
 		}
 
+		// Store our settings in memory to reduce mysql calls
 		$this->settings = $this->get_settings();
 		$this->dir = plugin_dir_url(__FILE__);
+
+		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
+		
+		// Enqueue Lazy Load XT scripts and styles
+		add_action( 'wp_enqueue_scripts', array($this,'load_scripts') );
+		// If advanced settings are enabled, print inline js in the head
 		if ( $this->settings['advanced'] ) {
 			add_action( 'wp_head', array($this,'print_scripts') );
 		}
+		
+		// Replace the 'src' attr with 'data-src' in the_content
+		add_filter( 'the_content', array($this,'the_content_filter') );
+		// If enabled replace the 'src' attr with 'data-src' in the_post_thumbnail
+		if ($this->settings['thumbnails']) {
+			add_filter( 'wp_get_attachment_image_attributes', array($this,'wp_get_attachment_image_attributes_filter') );
+		}
+		
 		
 
 	}
@@ -55,14 +66,17 @@ class LazyLoadXT {
 
 	function get_settings() {
 
+		// Get setting options from the db
 		$general = get_option('lazyloadxt_general');
 		$effects = get_option('lazyloadxt_effects');
 		$addons = get_option('lazyloadxt_addons');
 		$advanced = get_option('lazyloadxt_advanced');
 
+		// Set the array of options
 		$settings_arr = array(
 				'minimize_scripts',
 				'load_extras',
+				'thumbnails',
 				'fade_in',
 				'spinner',
 				'script_based_tagging',
@@ -72,7 +86,9 @@ class LazyLoadXT {
 				'deferred_load',
 			);
 
+		// Start fresh
 		$settings = array();
+		// Loop through the settings we're looking for, and set them if they exist
 		foreach ($settings_arr as $setting) {
 			if ($general && array_key_exists('lazyloadxt_'.$setting,$general)){
 				$return = $general['lazyloadxt_'.$setting];
@@ -81,12 +97,13 @@ class LazyLoadXT {
 			} elseif ($addons && array_key_exists('lazyloadxt_'.$setting,$addons)){
 				$return = $addons['lazyloadxt_'.$setting];
 			} else {
+				// Otherwise set the option to false
 				$return = false;
 			}
 			$settings[$setting] = $return;
 		}
 
-		
+		// If enabled, set the advanced settings to an array
 		if ($advanced['lazyloadxt_enabled']) {
 			foreach ($advanced as $key => $val) {
 				if ( $key != 'lazyloadxt_enabled' ) {
@@ -94,9 +111,11 @@ class LazyLoadXT {
 				}
 			}
 		} else {
+			// Otherwise set it to false
 			$settings['advanced'] = false;
 		}
 		
+		// Return the settings
 		return $settings;
 
 	}
@@ -104,16 +123,22 @@ class LazyLoadXT {
 
 	
 	function load_scripts() {
+
+		// Are these minified?
 		$min = ($this->settings['minimize_scripts']) ? '.min' : '';
+		// Just to save space
 		$jqll = 'jquery.lazyloadxt';
 		
+		// Enqueue fade-in if enabled
 		if ( $this->settings['fade_in'] ) {
 			wp_enqueue_style( 'lazyloadxt-fadein-style', $this->dir.'css/'.$jqll.'.fadein'.$min.'.css', false, $this->lazyloadxt_ver );
 		}
+		// Enqueue spinner if enabled
 		if ( $this->settings['spinner'] ) {
 			wp_enqueue_style( 'lazyloadxt-spinner-style', $this->dir.'css/'.$jqll.'.spinner'.$min.'.css', false, $this->lazyloadxt_ver );
 		}
 		
+		// Enqueue extras enabled. Otherwise, load the regular script
 		if ( $this->settings['load_extras'] ) {
 			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.'.extra'.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver );
 		} else {
@@ -124,11 +149,13 @@ class LazyLoadXT {
 		}
 		if ( $this->settings['responsive_images'] ) {
 		}*/
+		// Enqueue print if enabled
 		if ( $this->settings['print'] ) {
 			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.'.print'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
 		}
 		/*if ( $this->settings['background_image'] ) {
 		}*/
+		// Enqueue deferred load if enabled
 		if ( $this->settings['deferred_load'] ) {
 			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
 		}
@@ -139,6 +166,7 @@ class LazyLoadXT {
 		?>
 		<script type="text/javascript">
 			jQuery.extend(jQuery.lazyLoadXT, { <?php
+				// Print out the advanced settings
 				foreach ($this->settings['advanced'] as $key => $val) {
 					echo "$key : '$val', ";
 				}

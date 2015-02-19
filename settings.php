@@ -6,7 +6,8 @@ class LazyLoadXTSettings extends LazyLoadXT {
 
 	protected $defaults = array(
 			'general' => array(
-					'lazyloadxt_minimize_scripts'=>1
+					'lazyloadxt_minimize_scripts' => 1,
+					'lazyloadxt_thumbnails' => 1,
 				),
 			'advanced' => array(
 					'lazyloadxt_enabled' => 0,
@@ -136,6 +137,11 @@ class LazyLoadXTSettings extends LazyLoadXT {
 			<label for="lazyloadxt_load_extras">
 				<input type='checkbox' id='lazyloadxt_load_extras' name='lazyloadxt_general[lazyloadxt_load_extras]' <?php checked( $options['lazyloadxt_load_extras'], 1 ); ?> value="1">
 				<?php _e('Lazy load YouTube and Vimeo videos, iframes, audio, etc.','lazy-load-xt'); ?>
+			</label>
+			<br />
+			<label for="lazyloadxt_thumbnails">
+				<input type='checkbox' id='lazyloadxt_thumbnails' name='lazyloadxt_general[lazyloadxt_thumbnails]' <?php checked( $options['lazyloadxt_thumbnails'], 1 ); ?> value="1">
+				<?php _e('Lazy load post thumbnails.','lazy-load-xt'); ?>
 			</label>
 		</fieldset>
 		<?php
