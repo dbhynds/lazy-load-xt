@@ -150,6 +150,11 @@ class LazyLoadXTSettings extends LazyLoadXT {
 				<input type='checkbox' id='lazyloadxt_thumbnails' name='lazyloadxt_general[lazyloadxt_thumbnails]' <?php checked( $options['lazyloadxt_thumbnails'], 1 ); ?> value="1">
 				<?php _e('Lazy load post thumbnails.','lazy-load-xt'); ?>
 			</label>
+			<br />
+			<label for="lazyloadxt_excludeclasses">
+				<textarea id='lazyloadxt_excludeclasses' name='lazyloadxt_general[lazyloadxt_excludeclasses]' rows="5" cols="30"><?php echo $options['lazyloadxt_excludeclasses']; ?>/textarea>
+				<?php _e('Prevent objects with the above classes from being lazy loaded. (List classes separated by a space and without the proceding period. e.g. "skip-this dont-lazyload thumbnail".)','lazy-load-xt'); ?>
+			</label>
 		</fieldset>
 		<?php
 
