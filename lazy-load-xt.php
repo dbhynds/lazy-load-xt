@@ -30,6 +30,10 @@ class LazyLoadXT {
 			strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mini' ) !== false ) {
 				return;
 		}*/
+
+		// Store our settings in memory to reduce mysql calls
+		$this->settings = $this->get_settings();
+		$this->dir = plugin_dir_url(__FILE__);
 		
 		// If we're in the admin area, load the settings class
 		if (is_admin()) {
@@ -38,10 +42,6 @@ class LazyLoadXT {
 			// If this is the first time we've enabled the plugin, setup default settings
 			register_activation_hook(__FILE__,array($settingsClass,'first_time_activation'));
 		}
-
-		// Store our settings in memory to reduce mysql calls
-		$this->settings = $this->get_settings();
-		$this->dir = plugin_dir_url(__FILE__);
 
 		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
 		

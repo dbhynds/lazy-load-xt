@@ -36,6 +36,7 @@ class LazyLoadXTSettings extends LazyLoadXT {
 	public function __construct() {
 		add_action( 'admin_menu', array($this,'lazyloadxt_add_admin_menu') );
 		add_action( 'admin_init', array($this,'lazyloadxt_settings_init') );
+		add_action( 'admin_enqueue_scripts', array($this,'lazyloadxt_enqueue_admin') );
 	}
 
 	function first_time_activation() {
@@ -48,7 +49,13 @@ class LazyLoadXTSettings extends LazyLoadXT {
 	}
 
 	function lazyloadxt_add_admin_menu() { 
-		add_options_page( 'Lazy Load XT', 'Lazy Load XT', 'manage_options', 'lazyloadxt', array($this,'settings_page') );
+		$admin_page = add_options_page( 'Lazy Load XT', 'Lazy Load XT', 'manage_options', 'lazyloadxt', array($this,'settings_page') );
+	}
+	function lazyloadxt_enqueue_admin() {
+		$screen = get_current_screen();
+		if ($screen->base == 'settings_page_lazyloadxt') {
+			wp_enqueue_script('lazyloadxt-admin',plugin_dir_url(__FILE__).'js/admin/lazyloadxt.admin.js','jquery');
+		}
 	}
 
 
@@ -374,9 +381,9 @@ class LazyLoadXTSettings extends LazyLoadXT {
 		?>
 		<div class="wrap">
 			<h2><?php _e('Lazy Load XT'); ?></h2>
-			<ul class="subsubsub" style='overflow: auto;'>
-				<li class="basic"><a href="#basic" class="basic">Basic Settings</a> |</li>
-				<li class="advanced"><a href="#advanced" class="advanced">Advanced Settings</a></li>
+			<ul class="subsubsub" id="lazyloadxt-menu" style='overflow: auto;'>
+				<li class="basic"><a href="#" class="basic">Basic Settings</a> |</li>
+				<li class="advanced"><a href="#" class="advanced">Advanced Settings</a></li>
 			</ul>
 			<br />
 			<br />
