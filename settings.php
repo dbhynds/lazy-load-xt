@@ -8,6 +8,7 @@ class LazyLoadXTSettings extends LazyLoadXT {
 			'general' => array(
 					'lazyloadxt_minimize_scripts' => 1,
 					'lazyloadxt_thumbnails' => 1,
+					'lazyloadxt_textwidgets' => 1,
 				),
 			'advanced' => array(
 					'lazyloadxt_enabled' => 0,
@@ -151,9 +152,15 @@ class LazyLoadXTSettings extends LazyLoadXT {
 				<?php _e('Lazy load post thumbnails.','lazy-load-xt'); ?>
 			</label>
 			<br />
+			<label for="lazyloadxt_textwidgets">
+				<input type='checkbox' id='lazyloadxt_textwidgets' name='lazyloadxt_general[lazyloadxt_textwidgets]' <?php checked( $options['lazyloadxt_textwidgets'], 1 ); ?> value="1">
+				<?php _e('Lazy load text widgets.','lazy-load-xt'); ?>
+			</label>
+			<br />
 			<label for="lazyloadxt_excludeclasses">
-				<textarea id='lazyloadxt_excludeclasses' name='lazyloadxt_general[lazyloadxt_excludeclasses]' rows="5" cols="30"><?php echo $options['lazyloadxt_excludeclasses']; ?>/textarea>
-				<?php _e('Prevent objects with the above classes from being lazy loaded. (List classes separated by a space and without the proceding period. e.g. "skip-this dont-lazyload thumbnail".)','lazy-load-xt'); ?>
+				<?php _e('Skip lazy loading on these classes:','lazy-load-xt'); ?><br />
+				<textarea id='lazyloadxt_excludeclasses' name='lazyloadxt_general[lazyloadxt_excludeclasses]' rows="3" cols="60"><?php echo $options['lazyloadxt_excludeclasses']; ?></textarea>
+				<p class="description"><?php _e('Prevent objects with the above classes from being lazy loaded. (List classes separated by a space and without the proceding period. e.g. "skip-lazy-load size-thumbnail".)','lazy-load-xt'); ?></p>
 			</label>
 		</fieldset>
 		<?php

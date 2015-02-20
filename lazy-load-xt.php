@@ -55,6 +55,10 @@ class LazyLoadXT {
 		
 		// Replace the 'src' attr with 'data-src' in the_content
 		add_filter( 'the_content', array($this,'the_content_filter') );
+		// If enabled replace the 'src' attr with 'data-src' in text widgets
+		if ($this->settings['textwidgets']) {
+			add_filter( 'widget_text', array($this,'the_content_filter') );
+		}
 		// If enabled replace the 'src' attr with 'data-src' in the_post_thumbnail
 		if ($this->settings['thumbnails']) {
 			add_filter( 'wp_get_attachment_image_attributes', array($this,'wp_get_attachment_image_attributes_filter') );
@@ -79,6 +83,8 @@ class LazyLoadXT {
 				'minimize_scripts',
 				'load_extras',
 				'thumbnails',
+				'textwidgets',
+				'excludeclasses',
 				'fade_in',
 				'spinner',
 				'script_based_tagging',
@@ -115,6 +121,10 @@ class LazyLoadXT {
 		} else {
 			// Otherwise set it to false
 			$settings['advanced'] = false;
+		}
+
+		if ($settings['excludeclasses']) {
+			$settings['excludeclasses'] = explode(' ',$settings['excludeclasses']);
 		}
 		
 		// Return the settings
@@ -199,6 +209,11 @@ class LazyLoadXT {
 		}
 	}
 
+	// Make an API
+	public function lazy_load_html($content) {
+		return $this->the_content_filter($content);
+	}
+
 	function switch_src_for_data_src($content,$tag) {
 		// Make a new DOMDoc
 		$doc = new DOMDocument();
@@ -209,11 +224,16 @@ class LazyLoadXT {
 
 		// Switch out the 'src' with 'data-src'
 		foreach ($elements as $element) {
-			$src = $element->getAttribute('src');
-			// Remove the existing attributes.
-			$element->removeAttribute('src');
-			// Set the new attribute.
-			$element->setAttribute('data-src', $src);
+			// Get the classes of element
+			$classes = explode(' ',$element->getAttribute('class'));
+			// If it doesn't have any of the designated "skip" classes, replace the 'src' with 'data-src'
+			if (count(array_intersect($classes,$this->settings['excludeclasses'])) == 0) {
+				$src = $element->getAttribute('src');
+				// Remove the existing attributes.
+				$element->removeAttribute('src');
+				// Set the new attribute.
+				$element->setAttribute('data-src', $src);
+			}
 		}
 
 		// Prep for return
@@ -252,7 +272,7 @@ class LazyLoadXT {
 }
 
 // Init
-new LazyLoadXT;
+$lazyloadxt = new LazyLoadXT;
 
 
 
