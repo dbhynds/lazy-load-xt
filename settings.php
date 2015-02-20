@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-class LazyLoadXTSettings extends LazyLoadXT {
+class LazyLoadXTSettings {
 
 	protected $defaults = array(
 			'general' => array(

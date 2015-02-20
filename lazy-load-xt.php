@@ -23,6 +23,8 @@ class LazyLoadXT {
 	protected $lazyloadxt_ver = '1.0.6'; // Version of Lazy Load XT (the script, not this plugin)
 	protected $settingsClass; // Settings class for admin area
 	protected $settings; // Settings for this plugin
+	
+	public $api = LazyLoadXTAPI;
 
 	function __construct() {
 		
@@ -37,6 +39,7 @@ class LazyLoadXT {
 		$this->dir = plugin_dir_url(__FILE__);
 
 		//$this->check_version();
+
 		
 		// If we're in the admin area, load the settings class
 		if (is_admin()) {
@@ -123,9 +126,7 @@ class LazyLoadXT {
 			$settings['advanced'] = false;
 		}
 
-		if ($settings['excludeclasses']) {
-			$settings['excludeclasses'] = explode(' ',$settings['excludeclasses']);
-		}
+		$settings['excludeclasses'] = ($settings['excludeclasses']) ? explode(' ',$settings['excludeclasses']) : array();
 		
 		// Return the settings
 		return $settings;
@@ -192,7 +193,7 @@ class LazyLoadXT {
 		<?php
 	}
 
-	function the_content_filter($content) {
+	public function the_content_filter($content) {
 		// If there's anything there, replace the 'src' with 'data-src'
 		if (strlen($content)) {
 			$newcontent = $content;
@@ -207,11 +208,6 @@ class LazyLoadXT {
 			// Otherwise, carry on
 			return $content;
 		}
-	}
-
-	// Make an API
-	public function lazy_load_html($content) {
-		return $this->the_content_filter($content);
 	}
 
 	function switch_src_for_data_src($content,$tag) {
@@ -269,11 +265,20 @@ class LazyLoadXT {
 		return $attr;
 	}
 
+
+
+
+	// Make an API
+	public function filter_html($content) {
+		return $this->the_content_filter($content);
+	}
+
+
+
 }
 
 // Init
 $lazyloadxt = new LazyLoadXT;
-
 
 
 
