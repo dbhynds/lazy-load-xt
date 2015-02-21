@@ -169,13 +169,14 @@ class LazyLoadXT {
 		}*/
 		// Enqueue print if enabled
 		if ( $this->settings['print'] ) {
-			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.'.print'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
+			wp_enqueue_script( 'lazy-load-xt-print', $this->dir.'js/'.$jqll.'.print'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
 		}
-		/*if ( $this->settings['background_image'] ) {
-		}*/
+		if ( $this->settings['background_image'] ) {
+			wp_enqueue_script( 'lazy-load-xt-bg', $this->dir.'js/'.$jqll.'.bg'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
+		}
 		// Enqueue deferred load if enabled
 		if ( $this->settings['deferred_load'] ) {
-			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
+			wp_enqueue_script( 'lazy-load-xt-deferred', $this->dir.'js/'.$jqll.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
 		}
 		
 	}
@@ -241,7 +242,6 @@ class LazyLoadXT {
 							}
     						// Set the new attribute.
 							$element->setAttribute('data-'.$attr, $elemattr);
-						    //$element->appendChild($noscript);//, $element);
 						}
 					}
 				}

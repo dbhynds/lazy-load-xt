@@ -196,11 +196,13 @@ class LazyLoadXTSettings {
 			<legend class="screen-reader-text">
 				<span><?php _e('Addons settings','lazy-load-xt'); ?></span>
 			</legend>
+			<br />
 			<?php /* ?>
 			<label for="lazyloadxt_script_based_tagging">
 				<input type='checkbox' id='lazyloadxt_script_based_tagging' name='lazyloadxt_addons[lazyloadxt_script_based_tagging]' <?php checked( $options['lazyloadxt_script_based_tagging'], 1 ); ?> value="1">
-
+				<?php _e('Enable script-based tagging.','lazy-load-xt'); ?>
 			</label>
+			<br />
 			<br />
 			<label for="lazyloadxt_responsive_images">
 				<input type='checkbox' id='lazyloadxt_responsive_images' name='lazyloadxt_addons[lazyloadxt_responsive_images]' <?php checked( $options['lazyloadxt_responsive_images'], 1 ); ?> value="1">
@@ -209,18 +211,18 @@ class LazyLoadXTSettings {
 			<?php */ ?>
 			<label for="lazyloadxt_print">
 				<input type='checkbox' id='lazyloadxt_print' name='lazyloadxt_addons[lazyloadxt_print]' <?php checked( $options['lazyloadxt_print'], 1 ); ?> value="1">
-				<?php _e('Make sure lazy loaded elements appear in the print view','lazy-load-xt'); ?>
+				<?php _e('Make sure lazy loaded elements appear in the print view.','lazy-load-xt'); ?>
 			</label>
 			<br />
-			<?php /* ?>
 			<label for="lazyloadxt_background_image">
 				<input type='checkbox' id='lazyloadxt_background_image' name='lazyloadxt_addons[lazyloadxt_background_image]' <?php checked( $options['lazyloadxt_background_image'], 1 ); ?> value="1">
+				<?php _e('Lazy load background images.','lazy-load-xt'); ?>
+				<p class="description"><?php _e('Note: You must add the attribute "data-bg" with a value of path to the image to elements with a background image, e.g. "&lt;div data-bg="/path/to/image.png"&gt;...&lt;/div&gt;"','lazy-load-xt'); ?></p>
 			</label>
 			<br />
-			<?php */ ?>
 			<label for="lazyloadxt_deferred_load">
 				<input type='checkbox' id='lazyloadxt_deferred_load' name='lazyloadxt_addons[lazyloadxt_deferred_load]' <?php checked( $options['lazyloadxt_deferred_load'], 1 ); ?> value="1">
-				<?php _e('Defer loading of objects by 50ms','lazy-load-xt'); ?>
+				<?php _e('Defer loading of objects by 50ms.','lazy-load-xt'); ?>
 			</label>
 		</fieldset>
 		<?php
