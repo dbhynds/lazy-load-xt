@@ -198,10 +198,10 @@ class LazyLoadXT {
 		if (strlen($content)) {
 			$newcontent = $content;
 			// Replace 'src' with 'data-src' on images
-			$newcontent = $this->switch_src_for_data_src($newcontent,'img');
+			$newcontent = $this->switch_src_for_data_src($newcontent,array('img'),true);
 			// If enabled, replace 'src' with 'data-src' on iframes
 			if ($this->settings['load_extras']) {
-				$newcontent = $this->switch_src_for_data_src($newcontent,'iframe');
+				$newcontent = $this->switch_src_for_data_src($newcontent,array('iframe','embed','video','audio','source'));
 			}
 			return $newcontent;
 		} else {
@@ -210,25 +210,41 @@ class LazyLoadXT {
 		}
 	}
 
-	function switch_src_for_data_src($content,$tag) {
+	function switch_src_for_data_src($content, $tags, $image = false) {
 		// Make a new DOMDoc
 		$doc = new DOMDocument();
 		// Load it up
 		$doc->LoadHTML($content);
-		// Get the elements we need to switch the src for
-		$elements = $doc->getElementsByTagName($tag);
 
-		// Switch out the 'src' with 'data-src'
-		foreach ($elements as $element) {
-			// Get the classes of element
-			$classes = explode(' ',$element->getAttribute('class'));
-			// If it doesn't have any of the designated "skip" classes, replace the 'src' with 'data-src'
-			if (count(array_intersect($classes,$this->settings['excludeclasses'])) == 0) {
-				$src = $element->getAttribute('src');
-				// Remove the existing attributes.
-				$element->removeAttribute('src');
-				// Set the new attribute.
-				$element->setAttribute('data-src', $src);
+		$attrs = array('src','poster');
+
+		foreach ($tags as $tag) {
+			// Get the elements we need to switch the src for
+			$elements = $doc->getElementsByTagName($tag);
+
+			// Switch out the 'src' with 'data-src'
+			foreach ($elements as $element) {
+				// Get the classes of element
+				$classes = explode(' ',$element->getAttribute('class'));
+				// If it doesn't have any of the designated "skip" classes, replace the 'src' with 'data-src'
+				if (count(array_intersect($classes,$this->settings['excludeclasses'])) == 0) {
+					foreach ($attrs as $attr) {
+						// Try to get the src attr
+						$elemattr = $element->getAttribute($attr);
+						//if attr exists
+						if ($elemattr) {
+							// Remove the existing attributes.
+							if ($image) {
+								$element->setAttribute($attr,'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
+							} else {
+								$element->removeAttribute($attr);
+							}
+    						// Set the new attribute.
+							$element->setAttribute('data-'.$attr, $elemattr);
+						    //$element->appendChild($noscript);//, $element);
+						}
+					}
+				}
 			}
 		}
 
