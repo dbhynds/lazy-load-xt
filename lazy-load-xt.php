@@ -194,7 +194,7 @@ class LazyLoadXT {
 		<?php
 	}
 
-	public function the_content_filter($content) {
+	function the_content_filter($content) {
 		// If there's anything there, replace the 'src' with 'data-src'
 		if (strlen($content)) {
 			$newcontent = $content;
@@ -214,8 +214,8 @@ class LazyLoadXT {
 	function switch_src_for_data_src($content, $tags, $image = false) {
 		// Make a new DOMDoc
 		$doc = new DOMDocument();
-		// Load it up
-		$doc->LoadHTML($content);
+		// Load it up (Doesn't like HTML5)
+		@$doc->LoadHTML($content);
 
 		$attrs = array('src','poster');
 
@@ -226,7 +226,14 @@ class LazyLoadXT {
 			// Switch out the 'src' with 'data-src'
 			foreach ($elements as $element) {
 				// Get the classes of element
-				$classes = explode(' ',$element->getAttribute('class'));
+				if ($tag == 'source') {
+					// Check the parent tag for <video> and <audio> tags
+					$parent = $element->parentNode;
+					$classes = explode(' ',$parent->getAttribute('class'));
+				} else {
+					$classes = explode(' ',$element->getAttribute('class'));
+				}
+				
 				// If it doesn't have any of the designated "skip" classes, replace the 'src' with 'data-src'
 				if (count(array_intersect($classes,$this->settings['excludeclasses'])) == 0) {
 					foreach ($attrs as $attr) {
