@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class LazyLoadXTSettings {
 
+	protected $ver = '0.2.0'; // Plugin version
 	protected $defaults = array(
 			'general' => array(
 					'lazyloadxt_minimize_scripts' => 1,
@@ -38,16 +39,39 @@ class LazyLoadXTSettings {
 		add_action( 'admin_menu', array($this,'lazyloadxt_add_admin_menu') );
 		add_action( 'admin_init', array($this,'lazyloadxt_settings_init') );
 		add_action( 'admin_enqueue_scripts', array($this,'lazyloadxt_enqueue_admin') );
+		add_action( 'upgrader_process_complete', array($this,'update') );
 	}
 
 	function first_time_activation() {
+		// Set default settings
+		$this->update_settings();
+		update_option('lazyloadxt_version',$this->ver);
+	}
+	function update_settings() {
 		$defaults = $this->defaults;
 		foreach ($defaults as $key => $val) {
-			if ( !get_option('lazyloadxt_'.$key) ) {
+			$option = get_option('lazyloadxt_'.$key);
+			if ( !$option ) {
 				update_option('lazyloadxt_'.$key,$val);
+			} else {
+				$newoption = array_merge($option,$val);
+				if (count(array_diff_key($newoption,$option))) {
+					update_option('lazyloadxt_'.$key,$newoption);
+				}
 			}
 		}
 	}
+	function update() {
+		$defaults = $this->defaults;
+		$ver = $this->ver;
+		$dbver = get_option('lazyloadxt_version','');
+		if (version_compare($ver,$dbver,'>')) {
+			$this->update_settings();
+			update_option('lazyloadxt_version',$this->ver);
+		}
+	}
+
+
 
 	function lazyloadxt_add_admin_menu() { 
 		$admin_page = add_options_page( 'Lazy Load XT', 'Lazy Load XT', 'manage_options', 'lazyloadxt', array($this,'settings_page') );

@@ -19,7 +19,6 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class LazyLoadXT {
 	
 	protected $dir; // Plugin directory
-	protected $ver = '0.1.0'; // Plugin version
 	protected $lazyloadxt_ver = '1.0.6'; // Version of Lazy Load XT (the script, not this plugin)
 	protected $settingsClass; // Settings class for admin area
 	protected $settings; // Settings for this plugin
@@ -68,7 +67,6 @@ class LazyLoadXT {
 		}
 
 		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
-		
 		
 
 	}
@@ -132,12 +130,6 @@ class LazyLoadXT {
 		return $settings;
 
 	}
-
-	function check_version() {
-		if (version_compare($this->ver, $this->settings['version']) == 1) {
-		}
-	}
-
 
 	
 	function load_scripts() {
