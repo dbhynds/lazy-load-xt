@@ -191,7 +191,7 @@ class LazyLoadXT {
 		if (strlen($content)) {
 			$newcontent = $content;
 			// Replace 'src' with 'data-src' on images
-			$newcontent = $this->switch_src_for_data_src($newcontent,array('img'),true);
+			$newcontent = $this->switch_src_for_data_src($newcontent,array('img'));
 			// If enabled, replace 'src' with 'data-src' on iframes
 			if ($this->settings['load_extras']) {
 				$newcontent = $this->switch_src_for_data_src($newcontent,array('iframe','embed','video','audio','source'));
@@ -203,13 +203,16 @@ class LazyLoadXT {
 		}
 	}
 
-	function switch_src_for_data_src($content, $tags, $image = false) {
+	function switch_src_for_data_src($content, $tags) {
 		// Make a new DOMDoc
 		$doc = new DOMDocument();
 		// Load it up (Doesn't like HTML5)
 		@$doc->LoadHTML($content);
 
+		// Attributes to search for
 		$attrs = array('src','poster');
+		// Elements requiring a 'src' attribute to be valide HTML
+		$src_req = array('img','source');
 
 		foreach ($tags as $tag) {
 			// Get the elements we need to switch the src for
@@ -233,10 +236,12 @@ class LazyLoadXT {
 						$elemattr = $element->getAttribute($attr);
 						//if attr exists
 						if ($elemattr) {
-							// Remove the existing attributes.
-							if ($image) {
+							// If a 'src' attribute is required for valid html
+							if (in_array($tag,$src_req)) {
+								// Set the 'src' to a 1x1 pixel transparent gif
 								$element->setAttribute($attr,'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
 							} else {
+								// Remove the existing attributes.
 								$element->removeAttribute($attr);
 							}
     						// Set the new attribute.
@@ -277,6 +282,7 @@ class LazyLoadXT {
 		// Change the attribute 'src' to 'data-src'
 		$attr['data-src'] = $attr['src'];
 		unset($attr['src']);
+		$attr['src'] = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 		return $attr;
 	}
 
