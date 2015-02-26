@@ -22,24 +22,13 @@ class LazyLoadXT {
 	protected $lazyloadxt_ver = '1.0.6'; // Version of Lazy Load XT (the script, not this plugin)
 	protected $settingsClass; // Settings class for admin area
 	protected $settings; // Settings for this plugin
-	
-	public $api = LazyLoadXTAPI;
 
 	function __construct() {
-		
-		/*if ( intval( get_query_var( 'print' ) ) == 1 ||
-			intval( get_query_var( 'printpage' ) ) == 1 || 
-			strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mini' ) !== false ) {
-				return;
-		}*/
 
 		// Store our settings in memory to reduce mysql calls
 		$this->settings = $this->get_settings();
 		$this->dir = plugin_dir_url(__FILE__);
 
-		//$this->check_version();
-
-		
 		// If we're in the admin area, load the settings class
 		if (is_admin()) {
 			require 'settings.php';
@@ -50,10 +39,6 @@ class LazyLoadXT {
 		
 		// Enqueue Lazy Load XT scripts and styles
 		add_action( 'wp_enqueue_scripts', array($this,'load_scripts') );
-		// If advanced settings are enabled, print inline js in the head
-		if ( $this->settings['advanced'] ) {
-			add_action( 'wp_head', array($this,'print_scripts') );
-		}
 		
 		// Replace the 'src' attr with 'data-src' in the_content
 		add_filter( 'the_content', array($this,'the_content_filter') );
@@ -66,9 +51,6 @@ class LazyLoadXT {
 			add_filter( 'wp_get_attachment_image_attributes', array($this,'wp_get_attachment_image_attributes_filter') );
 		}
 
-		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
-		
-
 	}
 
 	function get_settings() {
@@ -77,7 +59,6 @@ class LazyLoadXT {
 		$general = get_option('lazyloadxt_general');
 		$effects = get_option('lazyloadxt_effects');
 		$addons = get_option('lazyloadxt_addons');
-		$advanced = get_option('lazyloadxt_advanced');
 
 		// Set the array of options
 		$settings_arr = array(
@@ -112,18 +93,6 @@ class LazyLoadXT {
 			$settings[$setting] = $return;
 		}
 
-		// If enabled, set the advanced settings to an array
-		if ($advanced['lazyloadxt_enabled']) {
-			foreach ($advanced as $key => $val) {
-				if ( $key != 'lazyloadxt_enabled' ) {
-					$settings['advanced'][str_replace('lazyloadxt_','',$key)] = $val;
-				}
-			}
-		} else {
-			// Otherwise set it to false
-			$settings['advanced'] = false;
-		}
-
 		$settings['excludeclasses'] = ($settings['excludeclasses']) ? explode(' ',$settings['excludeclasses']) : array();
 		
 		// Return the settings
@@ -155,10 +124,6 @@ class LazyLoadXT {
 			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver );
 		}
 
-		/*if ( $this->settings['script_based_tagging'] ) {
-		}
-		if ( $this->settings['responsive_images'] ) {
-		}*/
 		// Enqueue print if enabled
 		if ( $this->settings['print'] ) {
 			wp_enqueue_script( 'lazy-load-xt-print', $this->dir.'js/'.$jqll.'.print'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
@@ -171,19 +136,6 @@ class LazyLoadXT {
 			wp_enqueue_script( 'lazy-load-xt-deferred', $this->dir.'js/'.$jqll.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
 		}
 		
-	}
-
-	function print_scripts() {
-		?>
-		<script type="text/javascript">
-			jQuery.extend(jQuery.lazyLoadXT, { <?php
-				// Print out the advanced settings
-				foreach ($this->settings['advanced'] as $key => $val) {
-					echo "$key : '$val', ";
-				}
-			?> } );
-		</script>
-		<?php
 	}
 
 	function the_content_filter($content) {
@@ -264,37 +216,13 @@ class LazyLoadXT {
 		return $return->saveHTML();
 	}
 
-	/*function get_image_tag_filter($html, $id, $alt, $align, $size) {
-	    list( $img_src, $width, $height ) = image_downsize($id, $size);
-	    $imagesize = getimagesize($img_src);
-
-	    $class = 'align' . esc_attr($align) .' size-' . esc_attr($size) . ' wp-image-' . $id;
-	    $html = '<img data-src="' . esc_attr($img_src) . '" alt="' . esc_attr($alt) . '" data-width="' . $imagesize[0] . '" data-height="' . $imagesize[1] . '" class="' . $class . '" />';
-	    $before = '';
-	    $after = '<noscript><img src="' . esc_attr($img_src) . '" alt="' . esc_attr($alt) . '" class="' . $class . '" /></noscript>';
-	    $html = $before . $html . $after;
-
-	    return $html;
-	}*/
-
-
 	function wp_get_attachment_image_attributes_filter($attr) {
 		// Change the attribute 'src' to 'data-src'
 		$attr['data-src'] = $attr['src'];
-		unset($attr['src']);
+		// Set 'src' to a 1x1 pixel transparent gif
 		$attr['src'] = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 		return $attr;
 	}
-
-
-
-
-	// Make an API
-	public function filter_html($content) {
-		return $this->the_content_filter($content);
-	}
-
-
 
 }
 
