@@ -4,7 +4,7 @@
  * @version 0.2
  */
 /*
-Plugin Name: Lazy Load XT for WordPress
+Plugin Name: Lazy Load XT
 Plugin URI: http://wordpress.org/plugins/lazy-load-xt/
 Description: Lazy load post images using Lazy Load XT
 Author: Davo Hynds
@@ -194,7 +194,7 @@ class LazyLoadXT {
 			$newcontent = $this->switch_src_for_data_src($newcontent,array('img'));
 			// If enabled, replace 'src' with 'data-src' on iframes
 			if ($this->settings['load_extras']) {
-				$newcontent = $this->switch_src_for_data_src($newcontent,array('iframe','embed','video','audio','source'));
+				$newcontent = $this->switch_src_for_data_src($newcontent,array('iframe','embed',/*'video',*/'audio','source'));
 			}
 			return $newcontent;
 		} else {
