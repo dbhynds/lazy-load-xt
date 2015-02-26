@@ -44,29 +44,23 @@ class LazyLoadXTSettings {
 
 	function first_time_activation() {
 		// Set default settings
-		$this->update_settings();
-		update_option('lazyloadxt_version',$this->ver);
-	}
-	function update_settings() {
 		$defaults = $this->defaults;
 		foreach ($defaults as $key => $val) {
-			$option = get_option('lazyloadxt_'.$key);
-			if ( !$option ) {
+			if ($get_option('lazyloadxt_'.$key,false) != false) {
 				update_option('lazyloadxt_'.$key,$val);
-			} else {
-				$newoption = array_merge($option,$val);
-				if (count(array_diff_key($newoption,$option))) {
-					update_option('lazyloadxt_'.$key,$newoption);
-				}
 			}
 		}
+		update_option('lazyloadxt_version',$this->ver);
 	}
+	
 	function update() {
 		$defaults = $this->defaults;
 		$ver = $this->ver;
 		$dbver = get_option('lazyloadxt_version','');
 		if (version_compare($ver,$dbver,'>')) {
-			$this->update_settings();
+			if (version_compare($dbver,'0.2','<=')) {
+				$this->first_time_activation();
+			}
 			update_option('lazyloadxt_version',$this->ver);
 		}
 	}

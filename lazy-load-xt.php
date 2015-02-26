@@ -1,7 +1,7 @@
 <?php
 /**
  * @package Lazy_Load_XT
- * @version 0.1
+ * @version 0.2
  */
 /*
 Plugin Name: Lazy Load XT for WordPress
@@ -9,7 +9,7 @@ Plugin URI: http://wordpress.org/plugins/lazy-load-xt/
 Description: Lazy load post images using Lazy Load XT
 Author: Davo Hynds
 Author URI: http://mightybytes.com
-Version: 0.1
+Version: 0.2
 Text Domain: lazy-load-xt
 */
 
