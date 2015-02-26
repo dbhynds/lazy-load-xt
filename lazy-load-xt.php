@@ -4,7 +4,7 @@
  * @version 0.2
  */
 /*
-Plugin Name: Lazy Load XT for WordPress
+Plugin Name: Lazy Load XT
 Plugin URI: http://wordpress.org/plugins/lazy-load-xt/
 Description: Lazy load post images using Lazy Load XT
 Author: Davo Hynds
