@@ -10,6 +10,11 @@ class LazyLoadXTSettings {
 					'lazyloadxt_minimize_scripts' => 1,
 					'lazyloadxt_thumbnails' => 1,
 					'lazyloadxt_textwidgets' => 1,
+					'lazyloadxt_load_extras' => 0,
+					'lazyloadxt_excludeclasses' => '',
+					'lazyloadxt_spinner' => 0,
+					'lazyloadxt_deferred_load' => 0,
+					'lazyloadxt_background_image' => 0,
 				),
 		);
 
@@ -24,7 +29,7 @@ class LazyLoadXTSettings {
 		// Set default settings
 		$defaults = $this->defaults;
 		foreach ($defaults as $key => $val) {
-			if ($get_option('lazyloadxt_'.$key,false) != false) {
+			if (get_option('lazyloadxt_'.$key,false) != false) {
 				update_option('lazyloadxt_'.$key,$val);
 			}
 		}

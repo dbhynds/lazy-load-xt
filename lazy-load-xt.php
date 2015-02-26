@@ -146,7 +146,7 @@ class LazyLoadXT {
 			$newcontent = $this->switch_src_for_data_src($newcontent,array('img'));
 			// If enabled, replace 'src' with 'data-src' on iframes
 			if ($this->settings['load_extras']) {
-				$newcontent = $this->switch_src_for_data_src($newcontent,array('iframe','embed','video','audio','source'));
+				$newcontent = $this->switch_src_for_data_src($newcontent,array('iframe','embed',/*'video',*/'audio','source'));
 			}
 			return $newcontent;
 		} else {
