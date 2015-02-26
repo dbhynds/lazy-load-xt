@@ -281,11 +281,10 @@ class LazyLoadXT {
 	function wp_get_attachment_image_attributes_filter($attr) {
 		// Change the attribute 'src' to 'data-src'
 		$attr['data-src'] = $attr['src'];
-		unset($attr['src']);
+		// Set 'src' to a 1x1 pixel transparent gif
 		$attr['src'] = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 		return $attr;
 	}
-
 
 
 
