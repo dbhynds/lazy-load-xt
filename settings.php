@@ -10,6 +10,7 @@ class LazyLoadXTSettings {
 					'lazyloadxt_minimize_scripts' => 1,
 					'lazyloadxt_thumbnails' => 1,
 					'lazyloadxt_textwidgets' => 1,
+					'lazyloadxt_img' => 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
 				),
 			'advanced' => array(
 					'lazyloadxt_enabled' => 0,
@@ -61,6 +62,9 @@ class LazyLoadXTSettings {
 			if (version_compare($dbver,'0.2','<=')) {
 				$this->first_time_activation();
 			}
+			if (version_compare($dbver,'0.3','<=')) {
+				$this->first_time_activation();
+			}
 			update_option('lazyloadxt_version',$this->ver);
 		}
 	}
@@ -73,7 +77,9 @@ class LazyLoadXTSettings {
 	function lazyloadxt_enqueue_admin() {
 		$screen = get_current_screen();
 		if ($screen->base == 'settings_page_lazyloadxt') {
+			wp_enqueue_style('thickbox-css');
 			wp_enqueue_script('lazyloadxt-admin',plugin_dir_url(__FILE__).'js/admin/lazyloadxt.admin.js','jquery');
+			wp_enqueue_script('thickbox');
 		}
 	}
 
@@ -179,6 +185,10 @@ class LazyLoadXTSettings {
 				<?php _e('Skip lazy loading on these classes:','lazy-load-xt'); ?><br />
 				<textarea id='lazyloadxt_excludeclasses' name='lazyloadxt_general[lazyloadxt_excludeclasses]' rows="3" cols="60"><?php echo $options['lazyloadxt_excludeclasses']; ?></textarea>
 				<p class="description"><?php _e('Prevent objects with the above classes from being lazy loaded. (List classes separated by a space and without the proceding period. e.g. "skip-lazy-load size-thumbnail".)','lazy-load-xt'); ?></p>
+			</label>
+			<label for="lazyloadxt_img">
+				<?php _e('Placeholder image:','lazy-load-xt'); ?>
+				<a title="Set featured image" href="/wp-admin/media-upload.php?type=image&amp;TB_iframe=1width=753&amp;height=287" class="thickbox">Set featured image</a>
 			</label>
 		</fieldset>
 		<?php
