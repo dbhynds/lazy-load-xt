@@ -46,7 +46,7 @@ class LazyLoadXTSettings {
 		// Set default settings
 		$defaults = $this->defaults;
 		foreach ($defaults as $key => $val) {
-			if ($get_option('lazyloadxt_'.$key,false) != false) {
+			if (get_option('lazyloadxt_'.$key,false) != false) {
 				update_option('lazyloadxt_'.$key,$val);
 			}
 		}
