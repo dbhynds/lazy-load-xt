@@ -8,7 +8,6 @@ Plugin Name: Lazy Load XT
 Plugin URI: http://wordpress.org/plugins/lazy-load-xt/
 Description: Lazy load post images using Lazy Load XT
 Author: Davo Hynds
-Author URI: http://mightybytes.com
 Version: 0.2
 Text Domain: lazy-load-xt
 */
