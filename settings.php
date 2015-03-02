@@ -162,33 +162,33 @@ class LazyLoadXTSettings {
 				<span><?php _e('Basic settings','lazy-load-xt'); ?></span>
 			</legend>
 			<label for="lazyloadxt_minimize_scripts">
-				<input type='checkbox' id='lazyloadxt_minimize_scripts' name='lazyloadxt_general[lazyloadxt_minimize_scripts]' <?php checked( $options['lazyloadxt_minimize_scripts'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_minimize_scripts' name='lazyloadxt_general[lazyloadxt_minimize_scripts]' <?php $this->checked_r( $options, 'lazyloadxt_minimize_scripts', 1 ); ?> value="1">
 				<?php _e('Load minimized versions of javascript and css files.','lazy-load-xt'); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_load_extras">
-				<input type='checkbox' id='lazyloadxt_load_extras' name='lazyloadxt_general[lazyloadxt_load_extras]' <?php checked( $options['lazyloadxt_load_extras'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_load_extras' name='lazyloadxt_general[lazyloadxt_load_extras]' <?php $this->checked_r( $options, 'lazyloadxt_load_extras', 1 ); ?> value="1">
 				<?php _e('Lazy load YouTube and Vimeo videos, iframes, audio, etc.','lazy-load-xt'); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_thumbnails">
-				<input type='checkbox' id='lazyloadxt_thumbnails' name='lazyloadxt_general[lazyloadxt_thumbnails]' <?php checked( $options['lazyloadxt_thumbnails'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_thumbnails' name='lazyloadxt_general[lazyloadxt_thumbnails]' <?php $this->checked_r( $options, 'lazyloadxt_thumbnails', 1 ); ?> value="1">
 				<?php _e('Lazy load post thumbnails.','lazy-load-xt'); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_textwidgets">
-				<input type='checkbox' id='lazyloadxt_textwidgets' name='lazyloadxt_general[lazyloadxt_textwidgets]' <?php checked( $options['lazyloadxt_textwidgets'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_textwidgets' name='lazyloadxt_general[lazyloadxt_textwidgets]' <?php $this->checked_r( $options, 'lazyloadxt_textwidgets', 1 ); ?> value="1">
 				<?php _e('Lazy load text widgets.','lazy-load-xt'); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_excludeclasses">
 				<?php _e('Skip lazy loading on these classes:','lazy-load-xt'); ?><br />
-				<textarea id='lazyloadxt_excludeclasses' name='lazyloadxt_general[lazyloadxt_excludeclasses]' rows="3" cols="60"><?php echo $options['lazyloadxt_excludeclasses']; ?></textarea>
+				<textarea id='lazyloadxt_excludeclasses' name='lazyloadxt_general[lazyloadxt_excludeclasses]' rows="3" cols="60"><?php
+					if (array_key_exists('lazyloadxt_excludeclasses',$options)) {
+						echo $options['lazyloadxt_excludeclasses'];
+					}
+				?></textarea>
 				<p class="description"><?php _e('Prevent objects with the above classes from being lazy loaded. (List classes separated by a space and without the proceding period. e.g. "skip-lazy-load size-thumbnail".)','lazy-load-xt'); ?></p>
-			</label>
-			<label for="lazyloadxt_img">
-				<?php _e('Placeholder image:','lazy-load-xt'); ?>
-				<a title="Set featured image" href="/wp-admin/media-upload.php?type=image&amp;TB_iframe=1width=753&amp;height=287" class="thickbox">Set featured image</a>
 			</label>
 		</fieldset>
 		<?php
@@ -204,12 +204,12 @@ class LazyLoadXTSettings {
 				<span><?php _e('Effects settings','lazy-load-xt'); ?></span>
 			</legend>
 			<label for="lazyloadxt_fade_in">
-				<input type='checkbox' id='lazyloadxt_fade_in' name='lazyloadxt_effects[lazyloadxt_fade_in]' <?php checked( $options['lazyloadxt_fade_in'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_fade_in' name='lazyloadxt_effects[lazyloadxt_fade_in]' <?php $this->checked_r( $options, 'lazyloadxt_fade_in', 1 ); ?> value="1">
 				<?php _e('Fade in lazy loaded objects','lazy-load-xt'); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_spinner">
-				<input type='checkbox' id='lazyloadxt_spinner' name='lazyloadxt_effects[lazyloadxt_spinner]' <?php checked( $options['lazyloadxt_spinner'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_spinner' name='lazyloadxt_effects[lazyloadxt_spinner]' <?php $this->checked_r( $options, 'lazyloadxt_spinner', 1 ); ?> value="1">
 				<?php _e('Show spinner while objects are loading','lazy-load-xt'); ?>
 			</label>
 		</fieldset>
@@ -236,17 +236,17 @@ class LazyLoadXTSettings {
 			<br />
 			<?php */ ?>
 			<label for="lazyloadxt_print">
-				<input type='checkbox' id='lazyloadxt_print' name='lazyloadxt_addons[lazyloadxt_print]' <?php checked( $options['lazyloadxt_print'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_print' name='lazyloadxt_addons[lazyloadxt_print]' <?php $this->checked_r( $options, 'lazyloadxt_print', 1 ); ?> value="1">
 				<?php _e('Make sure lazy loaded elements appear in the print view.','lazy-load-xt'); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_deferred_load">
-				<input type='checkbox' id='lazyloadxt_deferred_load' name='lazyloadxt_addons[lazyloadxt_deferred_load]' <?php checked( $options['lazyloadxt_deferred_load'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_deferred_load' name='lazyloadxt_addons[lazyloadxt_deferred_load]' <?php $this->checked_r( $options, 'lazyloadxt_deferred_load', 1 ); ?> value="1">
 				<?php _e('Defer loading of objects by 50ms.','lazy-load-xt'); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_background_image">
-				<input type='checkbox' id='lazyloadxt_background_image' name='lazyloadxt_addons[lazyloadxt_background_image]' <?php checked( $options['lazyloadxt_background_image'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_background_image' name='lazyloadxt_addons[lazyloadxt_background_image]' <?php $this->checked_r( $options, 'lazyloadxt_background_image', 1 ); ?> value="1">
 				<?php _e('Lazy load background images.','lazy-load-xt'); ?>
 				<p class="description"><?php _e('Note: You must add the attribute "data-bg" with a value of path to the image to elements with a background image.','lazy-load-xt'); ?></p>
 				<p class="description"><?php _e('E.g. "&lt;div data-bg="/path/to/image.png"&gt;...&lt;/div&gt;"','lazy-load-xt'); ?></p>
@@ -445,6 +445,12 @@ class LazyLoadXTSettings {
 		</div>
 		<?php
 
+	}
+
+	function checked_r($option, $key, $current = true,$echo = true) {
+		if (is_array($option) && array_key_exists($key, $option)) {
+			checked( $option[$key],$current,$echo );
+		}
 	}
 
 }
