@@ -70,7 +70,6 @@ class LazyLoadXTSettings {
 	}
 
 
-
 	function lazyloadxt_add_admin_menu() { 
 		$admin_page = add_options_page( 'Lazy Load XT', 'Lazy Load XT', 'manage_options', 'lazyloadxt', array($this,'settings_page') );
 	}
@@ -81,6 +80,10 @@ class LazyLoadXTSettings {
 			wp_enqueue_script('lazyloadxt-admin',plugin_dir_url(__FILE__).'js/admin/lazyloadxt.admin.js','jquery');
 			wp_enqueue_script('thickbox');
 		}
+	}
+	function lazyloadxt_action_links( $links ) {
+	        $links[] = '<a href="options-general.php?page=lazyloadxt">'.__('Settings','lazy-load-xt').'</a>';
+	    return $links;
 	}
 
 
