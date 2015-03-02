@@ -81,6 +81,7 @@ class LazyLoadXT {
 		// Set the array of options
 		$settings_arr = array(
 				'minimize_scripts',
+				'footer',
 				'load_extras',
 				'thumbnails',
 				'textwidgets',
@@ -135,6 +136,8 @@ class LazyLoadXT {
 
 		// Are these minified?
 		$min = ($this->settings['minimize_scripts']) ? '.min' : '';
+		// Load in footer?
+		$footer = $this->settings['footer'];
 		// Just to save space
 		$jqll = 'jquery.lazyloadxt';
 		
@@ -149,9 +152,9 @@ class LazyLoadXT {
 		
 		// Enqueue extras enabled. Otherwise, load the regular script
 		if ( $this->settings['load_extras'] ) {
-			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.'.extra'.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver );
+			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.'.extra'.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver, $footer );
 		} else {
-			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver );
+			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver, $footer );
 		}
 
 		/*if ( $this->settings['script_based_tagging'] ) {
@@ -160,14 +163,14 @@ class LazyLoadXT {
 		}*/
 		// Enqueue print if enabled
 		if ( $this->settings['print'] ) {
-			wp_enqueue_script( 'lazy-load-xt-print', $this->dir.'js/'.$jqll.'.print'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
+			wp_enqueue_script( 'lazy-load-xt-print', $this->dir.'js/'.$jqll.'.print'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
 		if ( $this->settings['background_image'] ) {
-			wp_enqueue_script( 'lazy-load-xt-bg', $this->dir.'js/'.$jqll.'.bg'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
+			wp_enqueue_script( 'lazy-load-xt-bg', $this->dir.'js/'.$jqll.'.bg'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
 		// Enqueue deferred load if enabled
 		if ( $this->settings['deferred_load'] ) {
-			wp_enqueue_script( 'lazy-load-xt-deferred', $this->dir.'js/'.$jqll.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
+			wp_enqueue_script( 'lazy-load-xt-deferred', $this->dir.'js/'.$jqll.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
 		
 	}

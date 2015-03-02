@@ -166,6 +166,16 @@ class LazyLoadXTSettings {
 				<?php _e('Load minimized versions of javascript and css files.','lazy-load-xt'); ?>
 			</label>
 			<br />
+			<label for="lazyloadxt_footer">
+				<input type='checkbox' id='lazyloadxt_footer' name='lazyloadxt_general[lazyloadxt_footer]' <?php $this->checked_r( $options, 'lazyloadxt_footer', 1 ); ?> value="1">
+				<?php _e('Load scripts in the footer.','lazy-load-xt'); ?>
+			</label>
+		</fieldset>
+		<fieldset>
+			<legend class="screen-reader-text">
+				<span><?php _e('Lazy Load settings','lazy-load-xt'); ?></span>
+			</legend>
+			<br />
 			<label for="lazyloadxt_load_extras">
 				<input type='checkbox' id='lazyloadxt_load_extras' name='lazyloadxt_general[lazyloadxt_load_extras]' <?php $this->checked_r( $options, 'lazyloadxt_load_extras', 1 ); ?> value="1">
 				<?php _e('Lazy load YouTube and Vimeo videos, iframes, audio, etc.','lazy-load-xt'); ?>
