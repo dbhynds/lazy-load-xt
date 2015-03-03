@@ -202,6 +202,13 @@ class LazyLoadXT {
 		}
 	}
 
+	function preg_replace_html($content,$tags) {
+		foreach($tags as $tag) {
+			preg_match_all('/\<'.$tag.'(.*?) src(.*?)>/',$content,$matches);
+			if (count($matches[0])) var_dump($matches[0]);
+		}
+	}
+
 	function switch_src_for_data_src($content, $tags) {
 		// Make a new DOMDoc
 		$doc = new DOMDocument();
