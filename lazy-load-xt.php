@@ -207,6 +207,11 @@ class LazyLoadXT {
 		$search = array();
 		$replace = array();
 
+		// Attributes to search for
+		$attrs = implode('|',array('src','poster'));
+		// Elements requiring a 'src' attribute to be valide HTML
+		$src_req = array('img','source');
+
 		// Loop through tags
 		foreach($tags as $tag) {
 			// Look for tag in content
@@ -215,21 +220,26 @@ class LazyLoadXT {
 			// If tags exist, loop through them and replace stuff
 			if (count($matches[0])) {
 				foreach ($matches[0] as $match) {
-					preg_match('/[\s\r\n]class=[\'"](.*?)[\'"]/',$match,$classes);
+					preg_match('/[\s\r\n]class=[\'"](.*?)[\'"]/', $match, $classes);
 					$classes_r = explode(' ',$classes[1]);
 					// But first, check that the tag doesn't have any excluded classes
-					if (count(array_intersect($classes_r,$this->settings['excludeclasses'])) == 0) {
+					if (count(array_intersect($classes_r, $this->settings['excludeclasses'])) == 0) {
 						// Set the original version for <noscript>
 						$original = $match;
 						// And add it to the $search array.
-						array_push($search,$original);
+						array_push($search, $original);
 
-						// Now replace 'src' with 'data-src'
-						$replace_markup = preg_replace('/[\s\r\n]src=/',' data-src=', $match);
+						// If the element requires a 'src', set the src to default image
+						$src = (in_array($tag, $src_req)) ? ' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"' : '';
+
+						// Set replace html
+						$replace_markup = $match;
+						// Now replace attr with data-attr
+						$replace_markup = preg_replace('/[\s\r\n]('.$attrs.')?=/', $src.' data-$1=', $replace_markup);
 						// And add the original in as <noscript>
 						$replace_markup .= '<noscript>'.$original.'</noscript>';
 						// And add it to the $replace array.
-						array_push($replace,$replace_markup);
+						array_push($replace, $replace_markup);
 					}
 				}
 			}
