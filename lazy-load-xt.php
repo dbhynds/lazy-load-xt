@@ -83,6 +83,7 @@ class LazyLoadXT {
 		// Set the array of options
 		$settings_arr = array(
 				'minimize_scripts',
+				'cdn',
 				'footer',
 				'load_extras',
 				'thumbnails',
@@ -132,7 +133,6 @@ class LazyLoadXT {
 		return $settings;
 
 	}
-
 	
 	function load_scripts() {
 

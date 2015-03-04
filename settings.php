@@ -169,6 +169,11 @@ class LazyLoadXTSettings {
 				<?php _e('Load minimized versions of javascript and css files.','lazy-load-xt'); ?>
 			</label>
 			<br />
+			<label for="lazyloadxt_cdn">
+				<input type='checkbox' id='lazyloadxt_cdn' name='lazyloadxt_general[lazyloadxt_cdn]' <?php $this->checked_r( $options, 'lazyloadxt_cdn', 1 ); ?> value="1">
+				<?php _e('Load scripts from cdnjs.','lazy-load-xt'); ?>
+			</label>
+			<br />
 			<label for="lazyloadxt_footer">
 				<input type='checkbox' id='lazyloadxt_footer' name='lazyloadxt_general[lazyloadxt_footer]' <?php $this->checked_r( $options, 'lazyloadxt_footer', 1 ); ?> value="1">
 				<?php _e('Load scripts in the footer.','lazy-load-xt'); ?>
