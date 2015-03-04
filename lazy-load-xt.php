@@ -190,10 +190,10 @@ class LazyLoadXT {
 		if (strlen($content)) {
 			$newcontent = $content;
 			// Replace 'src' with 'data-src' on images
-			$newcontent = $this->switch_src_for_data_src($newcontent,array('img'));
-			// If enabled, replace 'src' with 'data-src' on iframes
+			$newcontent = $this->preg_replace_html($newcontent,array('img'));
+			// If enabled, replace 'src' with 'data-src' on extra elements
 			if ($this->settings['load_extras']) {
-				$newcontent = $this->switch_src_for_data_src($newcontent,array('iframe','embed',/*'video',*/'audio','source'));
+				$newcontent = $this->preg_replace_html($newcontent,array('iframe','embed','video','audio','source'));
 			}
 			return $newcontent;
 		} else {
@@ -203,10 +203,41 @@ class LazyLoadXT {
 	}
 
 	function preg_replace_html($content,$tags) {
+
+		$search = array();
+		$replace = array();
+
+		// Loop through tags
 		foreach($tags as $tag) {
-			preg_match_all('/\<'.$tag.'(.*?) src(.*?)>/',$content,$matches);
-			if (count($matches[0])) var_dump($matches[0]);
+			// Look for tag in content
+			preg_match_all('/<'.$tag.'[\s\r\n]+.*?(\/|\/'.$tag.')>/is',$content,$matches);
+
+			// If tags exist, loop through them and replace stuff
+			if (count($matches[0])) {
+				foreach ($matches[0] as $match) {
+					preg_match('/[\s\r\n]class=[\'"](.*?)[\'"]/',$match,$classes);
+					$classes_r = explode(' ',$classes[1]);
+					// But first, check that the tag doesn't have any excluded classes
+					if (count(array_intersect($classes_r,$this->settings['excludeclasses'])) == 0) {
+						// Set the original version for <noscript>
+						$original = $match;
+						// And add it to the $search array.
+						array_push($search,$original);
+
+						// Now replace 'src' with 'data-src'
+						$replace_markup = preg_replace('/[\s\r\n]src=/',' data-src=', $match);
+						// And add the original in as <noscript>
+						$replace_markup .= '<noscript>'.$original.'</noscript>';
+						// And add it to the $replace array.
+						array_push($replace,$replace_markup);
+					}
+				}
+			}
 		}
+
+		// Replace all the $search items with the $replace items
+		$newcontent = str_replace($search, $replace, $content);
+		return $newcontent;
 	}
 
 	function switch_src_for_data_src($content, $tags) {
