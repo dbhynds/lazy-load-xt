@@ -36,6 +36,10 @@ class LazyLoadXT {
 		// Store our settings in memory to reduce mysql calls
 		$this->settings = $this->get_settings();
 		$this->dir = plugin_dir_url(__FILE__);
+		// The CDN has an older version
+		if ($this->settings['cdn']) {
+			$this->lazyloadxt_ver = '1.0.5';
+		}
 
 		//$this->check_version();
 
@@ -142,21 +146,30 @@ class LazyLoadXT {
 		$footer = $this->settings['footer'];
 		// Just to save space
 		$jqll = 'jquery.lazyloadxt';
+
+		// Set the URLs
+		if ($this->settings['cdn']) {
+			$style_url_pre = '//cdnjs.cloudflare.com/ajax/libs/jquery.lazyloadxt/1.0.5/jquery.lazyloadxt';
+			$script_url_pre = '//cdnjs.cloudflare.com/ajax/libs/jquery.lazyloadxt/1.0.5/jquery.lazyloadxt';
+		} else {
+			$style_url_pre = $this->dir.'css/'.$jqll;
+			$script_url_pre = $this->dir.'js/'.$jqll;
+		}
 		
 		// Enqueue fade-in if enabled
 		if ( $this->settings['fade_in'] ) {
-			wp_enqueue_style( 'lazyloadxt-fadein-style', $this->dir.'css/'.$jqll.'.fadein'.$min.'.css', false, $this->lazyloadxt_ver );
+			wp_enqueue_style( 'lazyloadxt-fadein-style', $style_url_pre.'.fadein'.$min.'.css', false, $this->lazyloadxt_ver );
 		}
 		// Enqueue spinner if enabled
 		if ( $this->settings['spinner'] ) {
-			wp_enqueue_style( 'lazyloadxt-spinner-style', $this->dir.'css/'.$jqll.'.spinner'.$min.'.css', false, $this->lazyloadxt_ver );
+			wp_enqueue_style( 'lazyloadxt-spinner-style', $style_url_pre.'.spinner'.$min.'.css', false, $this->lazyloadxt_ver );
 		}
 		
 		// Enqueue extras enabled. Otherwise, load the regular script
 		if ( $this->settings['load_extras'] ) {
-			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.'.extra'.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver, $footer );
+			wp_enqueue_script( 'lazy-load-xt-script', $script_url_pre.'.extra'.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver, $footer );
 		} else {
-			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver, $footer );
+			wp_enqueue_script( 'lazy-load-xt-script', $script_url_pre.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver, $footer );
 		}
 
 		/*if ( $this->settings['script_based_tagging'] ) {
@@ -165,14 +178,14 @@ class LazyLoadXT {
 		}*/
 		// Enqueue print if enabled
 		if ( $this->settings['print'] ) {
-			wp_enqueue_script( 'lazy-load-xt-print', $this->dir.'js/'.$jqll.'.print'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
+			wp_enqueue_script( 'lazy-load-xt-print', $script_url_pre.'.print'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
 		if ( $this->settings['background_image'] ) {
-			wp_enqueue_script( 'lazy-load-xt-bg', $this->dir.'js/'.$jqll.'.bg'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
+			wp_enqueue_script( 'lazy-load-xt-bg', $script_url_pre.'.bg'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
 		// Enqueue deferred load if enabled
 		if ( $this->settings['deferred_load'] ) {
-			wp_enqueue_script( 'lazy-load-xt-deferred', $this->dir.'js/'.$jqll.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
+			wp_enqueue_script( 'lazy-load-xt-deferred', $script_url_pre.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
 		
 	}
