@@ -235,7 +235,7 @@ class LazyLoadXT {
 								$replace_markup = '<script>L();</script>'.$original;
 							} else {
 								// Otherwise, use Lb(); and Le();
-								$replace_markup = '<script>Lb('.$tag.');</script>'.$original.'<script>Le();</script>';
+								$replace_markup = '<script>Lb(\''.$tag.'\');</script>'.$original.'<script>Le();</script>';
 							}
 							// Add it to the $replace array
 							array_push($replace, $replace_markup);
