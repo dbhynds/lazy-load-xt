@@ -20,17 +20,9 @@ class LazyLoadXT {
 	protected $dir; // Plugin directory
 	protected $lazyloadxt_ver = '1.0.6'; // Version of Lazy Load XT (the script, not this plugin)
 	protected $settingsClass; // Settings class for admin area
-	protected $settings; // Settings for this plugin
-	
-	public $api = LazyLoadXTAPI;
+	protected $settings; // Settings for this plugins
 
 	function __construct() {
-		
-		/*if ( intval( get_query_var( 'print' ) ) == 1 ||
-			intval( get_query_var( 'printpage' ) ) == 1 || 
-			strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mini' ) !== false ) {
-				return;
-		}*/
 
 		// Store our settings in memory to reduce mysql calls
 		$this->settings = $this->get_settings();
