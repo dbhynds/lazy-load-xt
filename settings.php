@@ -10,6 +10,7 @@ class LazyLoadXTSettings {
 					'lazyloadxt_minimize_scripts' => 1,
 					'lazyloadxt_thumbnails' => 1,
 					'lazyloadxt_textwidgets' => 1,
+					'lazyloadxt_avatars' => 1,
 				),
 			'advanced' => array(
 					'lazyloadxt_enabled' => 0,
@@ -173,6 +174,11 @@ class LazyLoadXTSettings {
 			<label for="lazyloadxt_textwidgets">
 				<input type='checkbox' id='lazyloadxt_textwidgets' name='lazyloadxt_general[lazyloadxt_textwidgets]' <?php checked( $options['lazyloadxt_textwidgets'], 1 ); ?> value="1">
 				<?php _e('Lazy load text widgets.','lazy-load-xt'); ?>
+			</label>
+			<br />
+			<label for="lazyloadxt_avatars">
+				<input type='checkbox' id='lazyloadxt_avatars' name='lazyloadxt_general[lazyloadxt_avatars]' <?php checked( $options['lazyloadxt_avatars'], 1 ); ?> value="1">
+				<?php _e('Lazy load gravatars.','lazy-load-xt'); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_excludeclasses">

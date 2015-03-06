@@ -62,7 +62,12 @@ class LazyLoadXT {
 		}
 		// If enabled replace the 'src' attr with 'data-src' in the_post_thumbnail
 		if ($this->settings['thumbnails']) {
-			add_filter( 'wp_get_attachment_image_attributes', array($this,'wp_get_attachment_image_attributes_filter') );
+			add_filter( 'post_thumbnail_html', array($this,'the_content_filter') );
+			//add_filter( 'wp_get_attachment_image_attributes', array($this,'wp_get_attachment_image_attributes_filter') );
+		}
+		// If enabled replace the 'src' attr with 'data-src' in the_post_thumbnail
+		if ($this->settings['avatars']) {
+			add_filter( 'get_avatar', array($this,'the_content_filter') );
 		}
 
 		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
@@ -83,6 +88,7 @@ class LazyLoadXT {
 				'minimize_scripts',
 				'load_extras',
 				'thumbnails',
+				'avatars',
 				'textwidgets',
 				'excludeclasses',
 				'fade_in',
