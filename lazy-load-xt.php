@@ -22,8 +22,6 @@ class LazyLoadXT {
 	protected $lazyloadxt_ver = '1.0.6'; // Version of Lazy Load XT (the script, not this plugin)
 	protected $settingsClass; // Settings class for admin area
 	protected $settings; // Settings for this plugin
-	
-	public $api = LazyLoadXTAPI;
 
 	function __construct() {
 		
