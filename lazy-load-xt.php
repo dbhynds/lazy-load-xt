@@ -152,9 +152,10 @@ class LazyLoadXT {
 			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver );
 		}
 
-		/*if ( $this->settings['script_based_tagging'] ) {
+		if ( $this->settings['script_based_tagging'] ) {
+			wp_enqueue_script( 'lazy-load-xt-bg', $this->dir.'js/'.$jqll.'.script'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
 		}
-		if ( $this->settings['responsive_images'] ) {
+		/*if ( $this->settings['responsive_images'] ) {
 		}*/
 		// Enqueue print if enabled
 		if ( $this->settings['print'] ) {
@@ -227,19 +228,32 @@ class LazyLoadXT {
 						// And add it to the $search array.
 						array_push($search, $original);
 
-						// If the element requires a 'src', set the src to default image
-						$src = (in_array($tag, $src_req)) ? ' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"' : '';
-						// If the element is an audio tag, set the src to a blank mp3
-						$src = ($tag == 'audio') ? $this->dir.'assets/empty.mp3' : $src;
+						// Use script-based tagging
+						if ($this->settings['script_based_tagging']) {
+							// If it's self-closing, use L();
+							if (in_array($tag, array('img','embed'))) {
+								$replace_markup = '<script>L();</script>'.$original;
+							} else {
+								// Otherwise, use Lb(); and Le();
+								$replace_markup = '<script>Lb('.$tag.');</script>'.$original.'<script>Le();</script>';
+							}
+							// Add it to the $replace array
+							array_push($replace, $replace_markup);
+						} else {
+							// If the element requires a 'src', set the src to default image
+							$src = (in_array($tag, $src_req)) ? ' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"' : '';
+							// If the element is an audio tag, set the src to a blank mp3
+							$src = ($tag == 'audio') ? $this->dir.'assets/empty.mp3' : $src;
 
-						// Set replace html
-						$replace_markup = $match;
-						// Now replace attr with data-attr
-						$replace_markup = preg_replace('/[\s\r\n]('.$attrs.')?=/', $src.' data-$1=', $replace_markup);
-						// And add the original in as <noscript>
-						$replace_markup .= '<noscript>'.$original.'</noscript>';
-						// And add it to the $replace array.
-						array_push($replace, $replace_markup);
+							// Set replace html
+							$replace_markup = $match;
+							// Now replace attr with data-attr
+							$replace_markup = preg_replace('/[\s\r\n]('.$attrs.')?=/', $src.' data-$1=', $replace_markup);
+							// And add the original in as <noscript>
+							$replace_markup .= '<noscript>'.$original.'</noscript>';
+							// And add it to the $replace array.
+							array_push($replace, $replace_markup);
+						}
 					}
 				}
 			}

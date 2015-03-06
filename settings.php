@@ -220,12 +220,12 @@ class LazyLoadXTSettings {
 			<legend class="screen-reader-text">
 				<span><?php _e('Addons settings','lazy-load-xt'); ?></span>
 			</legend>
-			<?php /* ?>
 			<label for="lazyloadxt_script_based_tagging">
 				<input type='checkbox' id='lazyloadxt_script_based_tagging' name='lazyloadxt_addons[lazyloadxt_script_based_tagging]' <?php checked( $options['lazyloadxt_script_based_tagging'], 1 ); ?> value="1">
 				<?php _e('Enable script-based tagging.','lazy-load-xt'); ?>
 			</label>
 			<br />
+			<?php /* ?>
 			<label for="lazyloadxt_responsive_images">
 				<input type='checkbox' id='lazyloadxt_responsive_images' name='lazyloadxt_addons[lazyloadxt_responsive_images]' <?php checked( $options['lazyloadxt_responsive_images'], 1 ); ?> value="1">
 			</label>
