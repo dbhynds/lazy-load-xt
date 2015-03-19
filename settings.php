@@ -131,7 +131,7 @@ class LazyLoadXTSettings {
 				<span><?php _e('Basic settings', $this->ns ); ?></span>
 			</legend>
 			<label for="lazyloadxt_minimize_scripts">
-				<input type='checkbox' id='lazyloadxt_minimize_scripts' name='lazyloadxt_general[lazyloadxt_minimize_scripts]' <?php checked( $options['lazyloadxt_minimize_scripts'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_minimize_scripts' name='lazyloadxt_general[lazyloadxt_minimize_scripts]' <?php $this->checked_r( $options, 'lazyloadxt_minimize_scripts', 1 ); ?> value="1">
 				<?php _e('Load minimized versions of javascript and css files.', $this->ns ); ?>
 			</label>
 			<br />
@@ -151,22 +151,22 @@ class LazyLoadXTSettings {
 			</legend>
 			<br />
 			<label for="lazyloadxt_load_extras">
-				<input type='checkbox' id='lazyloadxt_load_extras' name='lazyloadxt_general[lazyloadxt_load_extras]' <?php checked( $options['lazyloadxt_load_extras'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_load_extras' name='lazyloadxt_general[lazyloadxt_load_extras]' <?php $this->checked_r( $options, 'lazyloadxt_load_extras', 1 ); ?> value="1">
 				<?php _e('Lazy load YouTube and Vimeo videos, iframes, audio, etc.', $this->ns ); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_thumbnails">
-				<input type='checkbox' id='lazyloadxt_thumbnails' name='lazyloadxt_general[lazyloadxt_thumbnails]' <?php checked( $options['lazyloadxt_thumbnails'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_thumbnails' name='lazyloadxt_general[lazyloadxt_thumbnails]' <?php $this->checked_r( $options, 'lazyloadxt_thumbnails', 1 ); ?> value="1">
 				<?php _e('Lazy load post thumbnails.', $this->ns ); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_textwidgets">
-				<input type='checkbox' id='lazyloadxt_textwidgets' name='lazyloadxt_general[lazyloadxt_textwidgets]' <?php checked( $options['lazyloadxt_textwidgets'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_textwidgets' name='lazyloadxt_general[lazyloadxt_textwidgets]' <?php $this->checked_r( $options, 'lazyloadxt_textwidgets', 1 ); ?> value="1">
 				<?php _e('Lazy load text widgets.', $this->ns ); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_avatars">
-				<input type='checkbox' id='lazyloadxt_avatars' name='lazyloadxt_general[lazyloadxt_avatars]' <?php checked( $options['lazyloadxt_avatars'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_avatars' name='lazyloadxt_general[lazyloadxt_avatars]' <?php $this->checked_r( $options, 'lazyloadxt_avatars', 1 ); ?> value="1">
 				<?php _e('Lazy load gravatars.', $this->ns ); ?>
 			</label>
 			<br />
@@ -189,12 +189,12 @@ class LazyLoadXTSettings {
 				<span><?php _e('Effects settings', $this->ns ); ?></span>
 			</legend>
 			<label for="lazyloadxt_fade_in">
-				<input type='checkbox' id='lazyloadxt_fade_in' name='lazyloadxt_effects[lazyloadxt_fade_in]' <?php checked( $options['lazyloadxt_fade_in'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_fade_in' name='lazyloadxt_effects[lazyloadxt_fade_in]' <?php $this->checked_r( $options, 'lazyloadxt_fade_in', 1 ); ?> value="1">
 				<?php _e('Fade in lazy loaded objects', $this->ns ); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_spinner">
-				<input type='checkbox' id='lazyloadxt_spinner' name='lazyloadxt_effects[lazyloadxt_spinner]' <?php checked( $options['lazyloadxt_spinner'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_spinner' name='lazyloadxt_effects[lazyloadxt_spinner]' <?php $this->checked_r( $options, 'lazyloadxt_spinner', 1 ); ?> value="1">
 				<?php _e('Show spinner while objects are loading', $this->ns ); ?>
 			</label>
 		</fieldset>
@@ -210,22 +210,22 @@ class LazyLoadXTSettings {
 				<span><?php _e('Addons settings', $this->ns ); ?></span>
 			</legend>
 			<label for="lazyloadxt_script_based_tagging">
-				<input type='checkbox' id='lazyloadxt_script_based_tagging' name='lazyloadxt_addons[lazyloadxt_script_based_tagging]' <?php checked( $options['lazyloadxt_script_based_tagging'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_script_based_tagging' name='lazyloadxt_addons[lazyloadxt_script_based_tagging]' <?php $this->checked_r( $options, 'lazyloadxt_script_based_tagging', 1 ); ?> value="1">
 				<?php _e('Enable script-based tagging.', $this->ns ); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_print">
-				<input type='checkbox' id='lazyloadxt_print' name='lazyloadxt_addons[lazyloadxt_print]' <?php checked( $options['lazyloadxt_print'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_print' name='lazyloadxt_addons[lazyloadxt_print]' <?php $this->checked_r( $options, 'lazyloadxt_print', 1 ); ?> value="1">
 				<?php _e('Make sure lazy loaded elements appear in the print view.', $this->ns ); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_deferred_load">
-				<input type='checkbox' id='lazyloadxt_deferred_load' name='lazyloadxt_addons[lazyloadxt_deferred_load]' <?php checked( $options['lazyloadxt_deferred_load'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_deferred_load' name='lazyloadxt_addons[lazyloadxt_deferred_load]' <?php $this->checked_r( $options, 'lazyloadxt_deferred_load', 1 ); ?> value="1">
 				<?php _e('Defer loading of objects by 50ms.', $this->ns ); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_background_image">
-				<input type='checkbox' id='lazyloadxt_background_image' name='lazyloadxt_addons[lazyloadxt_background_image]' <?php checked( $options['lazyloadxt_background_image'], 1 ); ?> value="1">
+				<input type='checkbox' id='lazyloadxt_background_image' name='lazyloadxt_addons[lazyloadxt_background_image]' <?php $this->checked_r( $options, 'lazyloadxt_background_image', 1 ); ?> value="1">
 				<?php _e('Lazy load background images.', $this->ns ); ?>
 				<p class="description"><?php _e('Note: You must add the attribute "data-bg" with a value of path to the image to elements with a background image.', $this->ns ); ?></p>
 				<p class="description"><?php _e('E.g. "&lt;div data-bg="/path/to/image.png"&gt;...&lt;/div&gt;"', $this->ns ); ?></p>
