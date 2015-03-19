@@ -20,17 +20,9 @@ class LazyLoadXT {
 	protected $dir; // Plugin directory
 	protected $lazyloadxt_ver = '1.0.6'; // Version of Lazy Load XT (the script, not this plugin)
 	protected $settingsClass; // Settings class for admin area
-	protected $settings; // Settings for this plugin
-	
-	public $api = LazyLoadXTAPI;
+	protected $settings; // Settings for this plugins
 
 	function __construct() {
-		
-		/*if ( intval( get_query_var( 'print' ) ) == 1 ||
-			intval( get_query_var( 'printpage' ) ) == 1 || 
-			strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mini' ) !== false ) {
-				return;
-		}*/
 
 		// Store our settings in memory to reduce mysql calls
 		$this->settings = $this->get_settings();
@@ -62,7 +54,12 @@ class LazyLoadXT {
 		}
 		// If enabled replace the 'src' attr with 'data-src' in the_post_thumbnail
 		if ($this->settings['thumbnails']) {
-			add_filter( 'wp_get_attachment_image_attributes', array($this,'wp_get_attachment_image_attributes_filter') );
+			add_filter( 'post_thumbnail_html', array($this,'the_content_filter') );
+			//add_filter( 'wp_get_attachment_image_attributes', array($this,'wp_get_attachment_image_attributes_filter') );
+		}
+		// If enabled replace the 'src' attr with 'data-src' in the_post_thumbnail
+		if ($this->settings['avatars']) {
+			add_filter( 'get_avatar', array($this,'the_content_filter') );
 		}
 
 		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
@@ -83,6 +80,7 @@ class LazyLoadXT {
 				'minimize_scripts',
 				'load_extras',
 				'thumbnails',
+				'avatars',
 				'textwidgets',
 				'excludeclasses',
 				'fade_in',
@@ -154,9 +152,10 @@ class LazyLoadXT {
 			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver );
 		}
 
-		/*if ( $this->settings['script_based_tagging'] ) {
+		if ( $this->settings['script_based_tagging'] ) {
+			wp_enqueue_script( 'lazy-load-xt-bg', $this->dir.'js/'.$jqll.'.script'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
 		}
-		if ( $this->settings['responsive_images'] ) {
+		/*if ( $this->settings['responsive_images'] ) {
 		}*/
 		// Enqueue print if enabled
 		if ( $this->settings['print'] ) {
@@ -190,16 +189,79 @@ class LazyLoadXT {
 		if (strlen($content)) {
 			$newcontent = $content;
 			// Replace 'src' with 'data-src' on images
-			$newcontent = $this->switch_src_for_data_src($newcontent,array('img'));
-			// If enabled, replace 'src' with 'data-src' on iframes
+			$newcontent = $this->preg_replace_html($newcontent,array('img'));
+			// If enabled, replace 'src' with 'data-src' on extra elements
 			if ($this->settings['load_extras']) {
-				$newcontent = $this->switch_src_for_data_src($newcontent,array('iframe','embed',/*'video',*/'audio','source'));
+				$newcontent = $this->preg_replace_html($newcontent,array('iframe','embed','video','audio'));
 			}
 			return $newcontent;
 		} else {
 			// Otherwise, carry on
 			return $content;
 		}
+	}
+
+	function preg_replace_html($content,$tags) {
+
+		$search = array();
+		$replace = array();
+
+		// Attributes to search for
+		$attrs = implode('|',array('src','poster'));
+		// Elements requiring a 'src' attribute to be valide HTML
+		$src_req = array('img','video');
+
+		// Loop through tags
+		foreach($tags as $tag) {
+			// Look for tag in content
+			preg_match_all('/<'.$tag.'[\s\r\n]+.*?(\/|\/'.$tag.')>/is',$content,$matches);
+
+			// If tags exist, loop through them and replace stuff
+			if (count($matches[0])) {
+				foreach ($matches[0] as $match) {
+					preg_match('/[\s\r\n]class=[\'"](.*?)[\'"]/', $match, $classes);
+					$classes_r = explode(' ',$classes[1]);
+					// But first, check that the tag doesn't have any excluded classes
+					if (count(array_intersect($classes_r, $this->settings['excludeclasses'])) == 0) {
+						// Set the original version for <noscript>
+						$original = $match;
+						// And add it to the $search array.
+						array_push($search, $original);
+
+						// Use script-based tagging
+						if ($this->settings['script_based_tagging']) {
+							// If it's self-closing, use L();
+							if (in_array($tag, array('img','embed'))) {
+								$replace_markup = '<script>L();</script>'.$original;
+							} else {
+								// Otherwise, use Lb(); and Le();
+								$replace_markup = '<script>Lb(\''.$tag.'\');</script>'.$original.'<script>Le();</script>';
+							}
+							// Add it to the $replace array
+							array_push($replace, $replace_markup);
+						} else {
+							// If the element requires a 'src', set the src to default image
+							$src = (in_array($tag, $src_req)) ? ' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"' : '';
+							// If the element is an audio tag, set the src to a blank mp3
+							$src = ($tag == 'audio') ? $this->dir.'assets/empty.mp3' : $src;
+
+							// Set replace html
+							$replace_markup = $match;
+							// Now replace attr with data-attr
+							$replace_markup = preg_replace('/[\s\r\n]('.$attrs.')?=/', $src.' data-$1=', $replace_markup);
+							// And add the original in as <noscript>
+							$replace_markup .= '<noscript>'.$original.'</noscript>';
+							// And add it to the $replace array.
+							array_push($replace, $replace_markup);
+						}
+					}
+				}
+			}
+		}
+
+		// Replace all the $search items with the $replace items
+		$newcontent = str_replace($search, $replace, $content);
+		return $newcontent;
 	}
 
 	function switch_src_for_data_src($content, $tags) {
