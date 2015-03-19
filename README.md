@@ -31,6 +31,17 @@ None right now. Ask some!
 
 ## Changelog
 
+### 0.3.1
+* Fix some typos
+* Fix undefined index
+
+### 0.3
+* Parse HTML with regex instead of PHP's DOMDocument
+* Fix UTF-8 problems
+* Enable script-based tagging
+* Lazy load gravatars
+* Enable loading scripts from CDN and in footer
+
 ### 0.2
 *	Lazy load HTML5 elements
 *	Toggle and lazy load featured images, text widgets
