@@ -232,7 +232,8 @@ class LazyLoadXT {
 			if (count($matches[0])) {
 				foreach ($matches[0] as $match) {
 					preg_match('/[\s\r\n]class=[\'"](.*?)[\'"]/', $match, $classes);
-					$classes_r = explode(' ',$classes[1]);
+					// If it has assigned classes, explode them
+					$classes_r = (array_key_exists(1,$classes)) ? explode(' ',$classes[1]) : array();
 					// But first, check that the tag doesn't have any excluded classes
 					if (count(array_intersect($classes_r, $this->settings['excludeclasses'])) == 0) {
 						// Set the original version for <noscript>

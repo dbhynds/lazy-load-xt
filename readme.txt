@@ -29,6 +29,12 @@ Ask some questions.
 
 == Changelog ==
 
+= 0.3 =
+* Parse HTML with regex instead of PHP's DOMDocument
+* Fix UTF-8 problems
+* Enable script-based tagging
+* Lazy load gravatars
+
 = 0.2 =
 * Lazy load HTML5 elements
 * Toggle and lazy load featured images, text widgets
