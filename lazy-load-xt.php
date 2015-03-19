@@ -6,8 +6,9 @@
 /*
 Plugin Name: Lazy Load XT
 Plugin URI: http://wordpress.org/plugins/lazy-load-xt/
-Description: Lazy load post images using Lazy Load XT
+Description: Lazy Load XT is the fastest, lightest, fully customizable lazy load plugin in the WordPress Plugin Directory. Lazy load images, YouTube and Vimeo videos, and iframes using <a href="https://github.com/ressio/lazy-load-xt" target="_blank">Lazy Load XT</a>.
 Author: Davo Hynds
+Author URI: http://www.mightybytes.com/
 Version: 0.2
 Text Domain: lazy-load-xt
 */
@@ -20,16 +21,17 @@ class LazyLoadXT {
 	protected $dir; // Plugin directory
 	protected $lazyloadxt_ver = '1.0.6'; // Version of Lazy Load XT (the script, not this plugin)
 	protected $settingsClass; // Settings class for admin area
-	protected $settings; // Settings for this plugins
+	protected $settings; // Settings for this plugin
 
 	function __construct() {
 
 		// Store our settings in memory to reduce mysql calls
 		$this->settings = $this->get_settings();
 		$this->dir = plugin_dir_url(__FILE__);
-
-		//$this->check_version();
-
+		// The CDN has an older version
+		if ($this->settings['cdn']) {
+			$this->lazyloadxt_ver = '1.0.5';
+		}
 		
 		// If we're in the admin area, load the settings class
 		if (is_admin()) {
@@ -37,32 +39,30 @@ class LazyLoadXT {
 			$settingsClass = new LazyLoadXTSettings;
 			// If this is the first time we've enabled the plugin, setup default settings
 			register_activation_hook(__FILE__,array($settingsClass,'first_time_activation'));
+			add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array($settingsClass,'lazyloadxt_action_links'));
+		} else {
+			// Enqueue Lazy Load XT scripts and styles
+			add_action( 'wp_enqueue_scripts', array($this,'load_scripts') );
+			// If advanced settings are enabled, print inline js in the head
+			if ( $this->settings['advanced'] ) {
+				add_action( 'wp_head', array($this,'print_scripts') );
+			}
+			
+			// Replace the 'src' attr with 'data-src' in the_content
+			add_filter( 'the_content', array($this,'the_content_filter') );
+			// If enabled replace the 'src' attr with 'data-src' in text widgets
+			if ($this->settings['textwidgets']) {
+				add_filter( 'widget_text', array($this,'the_content_filter') );
+			}
+			// If enabled replace the 'src' attr with 'data-src' in the_post_thumbnail
+			if ($this->settings['thumbnails']) {
+				add_filter( 'post_thumbnail_html', array($this,'the_content_filter') );
+			}
+			// If enabled replace the 'src' attr with 'data-src' in the_post_thumbnail
+			if ($this->settings['avatars']) {
+				add_filter( 'get_avatar', array($this,'the_content_filter') );
+			}
 		}
-		
-		// Enqueue Lazy Load XT scripts and styles
-		add_action( 'wp_enqueue_scripts', array($this,'load_scripts') );
-		// If advanced settings are enabled, print inline js in the head
-		if ( $this->settings['advanced'] ) {
-			add_action( 'wp_head', array($this,'print_scripts') );
-		}
-		
-		// Replace the 'src' attr with 'data-src' in the_content
-		add_filter( 'the_content', array($this,'the_content_filter') );
-		// If enabled replace the 'src' attr with 'data-src' in text widgets
-		if ($this->settings['textwidgets']) {
-			add_filter( 'widget_text', array($this,'the_content_filter') );
-		}
-		// If enabled replace the 'src' attr with 'data-src' in the_post_thumbnail
-		if ($this->settings['thumbnails']) {
-			add_filter( 'post_thumbnail_html', array($this,'the_content_filter') );
-			//add_filter( 'wp_get_attachment_image_attributes', array($this,'wp_get_attachment_image_attributes_filter') );
-		}
-		// If enabled replace the 'src' attr with 'data-src' in the_post_thumbnail
-		if ($this->settings['avatars']) {
-			add_filter( 'get_avatar', array($this,'the_content_filter') );
-		}
-
-		//add_filter( 'get_image_tag', array($this,'get_image_tag_filter'), 10, 2);
 		
 
 	}
@@ -78,6 +78,8 @@ class LazyLoadXT {
 		// Set the array of options
 		$settings_arr = array(
 				'minimize_scripts',
+				'cdn',
+				'footer',
 				'load_extras',
 				'thumbnails',
 				'avatars',
@@ -127,29 +129,39 @@ class LazyLoadXT {
 		return $settings;
 
 	}
-
 	
 	function load_scripts() {
 
 		// Are these minified?
 		$min = ($this->settings['minimize_scripts']) ? '.min' : '';
+		// Load in footer?
+		$footer =  ( $this->settings['script_based_tagging'] ) ? false : $this->settings['footer'];
 		// Just to save space
 		$jqll = 'jquery.lazyloadxt';
+
+		// Set the URLs
+		if ($this->settings['cdn']) {
+			$style_url_pre = '//cdnjs.cloudflare.com/ajax/libs/jquery.lazyloadxt/1.0.5/jquery.lazyloadxt';
+			$script_url_pre = '//cdnjs.cloudflare.com/ajax/libs/jquery.lazyloadxt/1.0.5/jquery.lazyloadxt';
+		} else {
+			$style_url_pre = $this->dir.'css/'.$jqll;
+			$script_url_pre = $this->dir.'js/'.$jqll;
+		}
 		
 		// Enqueue fade-in if enabled
 		if ( $this->settings['fade_in'] ) {
-			wp_enqueue_style( 'lazyloadxt-fadein-style', $this->dir.'css/'.$jqll.'.fadein'.$min.'.css', false, $this->lazyloadxt_ver );
+			wp_enqueue_style( 'lazyloadxt-fadein-style', $style_url_pre.'.fadein'.$min.'.css', false, $this->lazyloadxt_ver );
 		}
 		// Enqueue spinner if enabled
 		if ( $this->settings['spinner'] ) {
-			wp_enqueue_style( 'lazyloadxt-spinner-style', $this->dir.'css/'.$jqll.'.spinner'.$min.'.css', false, $this->lazyloadxt_ver );
+			wp_enqueue_style( 'lazyloadxt-spinner-style', $style_url_pre.'.spinner'.$min.'.css', false, $this->lazyloadxt_ver );
 		}
 		
 		// Enqueue extras enabled. Otherwise, load the regular script
 		if ( $this->settings['load_extras'] ) {
-			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.'.extra'.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver );
+			wp_enqueue_script( 'lazy-load-xt-script', $script_url_pre.'.extra'.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver, $footer );
 		} else {
-			wp_enqueue_script( 'lazy-load-xt-script', $this->dir.'js/'.$jqll.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver );
+			wp_enqueue_script( 'lazy-load-xt-script', $script_url_pre.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver, $footer );
 		}
 
 		if ( $this->settings['script_based_tagging'] ) {
@@ -159,14 +171,14 @@ class LazyLoadXT {
 		}*/
 		// Enqueue print if enabled
 		if ( $this->settings['print'] ) {
-			wp_enqueue_script( 'lazy-load-xt-print', $this->dir.'js/'.$jqll.'.print'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
+			wp_enqueue_script( 'lazy-load-xt-print', $script_url_pre.'.print'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
 		if ( $this->settings['background_image'] ) {
-			wp_enqueue_script( 'lazy-load-xt-bg', $this->dir.'js/'.$jqll.'.bg'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
+			wp_enqueue_script( 'lazy-load-xt-bg', $script_url_pre.'.bg'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
 		// Enqueue deferred load if enabled
 		if ( $this->settings['deferred_load'] ) {
-			wp_enqueue_script( 'lazy-load-xt-deferred', $this->dir.'js/'.$jqll.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
+			wp_enqueue_script( 'lazy-load-xt-deferred', $script_url_pre.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
 		
 	}
@@ -324,37 +336,6 @@ class LazyLoadXT {
 		// And we're done
 		return $return->saveHTML();
 	}
-
-	/*function get_image_tag_filter($html, $id, $alt, $align, $size) {
-	    list( $img_src, $width, $height ) = image_downsize($id, $size);
-	    $imagesize = getimagesize($img_src);
-
-	    $class = 'align' . esc_attr($align) .' size-' . esc_attr($size) . ' wp-image-' . $id;
-	    $html = '<img data-src="' . esc_attr($img_src) . '" alt="' . esc_attr($alt) . '" data-width="' . $imagesize[0] . '" data-height="' . $imagesize[1] . '" class="' . $class . '" />';
-	    $before = '';
-	    $after = '<noscript><img src="' . esc_attr($img_src) . '" alt="' . esc_attr($alt) . '" class="' . $class . '" /></noscript>';
-	    $html = $before . $html . $after;
-
-	    return $html;
-	}*/
-
-
-	function wp_get_attachment_image_attributes_filter($attr) {
-		// Change the attribute 'src' to 'data-src'
-		$attr['data-src'] = $attr['src'];
-		// Set 'src' to a 1x1 pixel transparent gif
-		$attr['src'] = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-		return $attr;
-	}
-
-
-
-	// Make an API
-	public function filter_html($content) {
-		return $this->the_content_filter($content);
-	}
-
-
 
 }
 

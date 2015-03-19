@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class LazyLoadXTSettings {
 
-	protected $ver = '0.2.0'; // Plugin version
+	protected $ver = '0.3.0'; // Plugin version
 	protected $ns = 'lazy-load-xt';
 	protected $defaults = array(
 			'general' => array(
@@ -12,28 +12,7 @@ class LazyLoadXTSettings {
 					'lazyloadxt_thumbnails' => 1,
 					'lazyloadxt_textwidgets' => 1,
 					'lazyloadxt_avatars' => 1,
-				),
-			'advanced' => array(
-					'lazyloadxt_enabled' => 0,
-					'lazyloadxt_autoInit' => 1,
-					'lazyloadxt_selector' => 'img[data-src]',
-					'lazyloadxt_srcAttr' => 'data-src',
-					'lazyloadxt_blankImage' => 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-					'lazyloadxt_edgeY' => 0,
-					'lazyloadxt_edgeX' => 0,
-					'lazyloadxt_throttle' => 99,
-					'lazyloadxt_visibleOnly' => 1,
-					'lazyloadxt_checkDuplicates' => 1,
-					'lazyloadxt_scrollContainer' => null,
-					'lazyloadxt_forceLoad' => 0,
-					'lazyloadxt_loadEvent' => 'pageshow',
-					'lazyloadxt_updateEvent' => 'load orientationchange resize scroll',
-					'lazyloadxt_forceEvent' => '',
-					'lazyloadxt_oninit' => "{removeClass: 'lazy'}",
-					'lazyloadxt_onshow' => "{addClass: 'lazy-hidden'}",
-					'lazyloadxt_onload' => "{removeClass: 'lazy-hidden', addClass: 'lazy-loaded'}",
-					'lazyloadxt_onerror' => "{removeClass: 'lazy-hidden'}",
-					'lazyloadxt_oncomplete' => null,
+					'lazyloadxt_img' => 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
 				),
 		);
 
@@ -48,11 +27,18 @@ class LazyLoadXTSettings {
 		// Set default settings
 		$defaults = $this->defaults;
 		foreach ($defaults as $key => $val) {
-			if (get_option('lazyloadxt_'.$key,false) != false) {
+			if (get_option('lazyloadxt_'.$key,false) == false) {
 				update_option('lazyloadxt_'.$key,$val);
 			}
 		}
 		update_option('lazyloadxt_version',$this->ver);
+	}
+	function upgrade($to) {
+		if ($to == '0.3') {
+			$general = get_option('lazyloadxt_general');
+			$general['lazyloadxt_avatars'] = $this->defaults['general']['lazyloadxt_avatars'];
+			update_option('lazyloadxt_general',$general);
+		}
 	}
 	
 	function update() {
@@ -62,11 +48,12 @@ class LazyLoadXTSettings {
 		if (version_compare($ver,$dbver,'>')) {
 			if (version_compare($dbver,'0.2','<=')) {
 				$this->first_time_activation();
+			} elseif (version_compare($dbver,'0.3','<=')) {
+				$this->upgrade('0.3');
 			}
 			update_option('lazyloadxt_version',$this->ver);
 		}
 	}
-
 
 
 	function lazyloadxt_add_admin_menu() { 
@@ -75,20 +62,26 @@ class LazyLoadXTSettings {
 	function lazyloadxt_enqueue_admin() {
 		$screen = get_current_screen();
 		if ($screen->base == 'settings_page_lazyloadxt') {
-			wp_enqueue_script('lazyloadxt-admin',plugin_dir_url(__FILE__).'js/admin/lazyloadxt.admin.js','jquery');
+			wp_enqueue_style('thickbox-css');
 			add_action( 'admin_notices', array($this,'ask_for_feedback') );
 		}
 	}
+	
 	function ask_for_feedback() {
 	    ?>
 	    <div class="updated">
 	        <p><?php _e( 'Help improve Lazy Load XT: <a href="https://wordpress.org/support/plugin/lazy-load-xt" target="_blank">submit feedback, questions, and bug reports</a>.', $this->ns ); ?></p>
 	    </div>
 	    <?php
+		wp_enqueue_script('thickbox');
+	}
+	function lazyloadxt_action_links( $links ) {
+	    $links[] = '<a href="options-general.php?page=lazyloadxt">'.__('Settings','lazy-load-xt').'</a>';
+	    return $links;
 	}
 
-
 	function lazyloadxt_settings_init() {
+		$this->update();
 
 		register_setting( 'basicSettings', 'lazyloadxt_general' );
 		register_setting( 'basicSettings', 'lazyloadxt_effects' );
@@ -125,34 +118,6 @@ class LazyLoadXTSettings {
 			'lazyloadxt_basic_section' 
 		);
 
-
-
-
-		register_setting( 'advancedSettings', 'lazyloadxt_advanced' );
-
-		add_settings_section(
-			'lazyloadxt_advanced_section',
-			__( 'Advanced Settings', $this->ns ),
-			array($this,'lazyloadxt_advanced_section_callback'),
-			'advancedSettings'
-		);
-
-		add_settings_field( 
-			'lazyloadxt_advanced_enabled',
-			__( 'Enable', $this->ns ),
-			array($this,'lazyloadxt_advanced_enabled_render'),
-			'advancedSettings',
-			'lazyloadxt_advanced_section' 
-		);
-
-		add_settings_field( 
-			'lazyloadxt_advanced',
-			__( 'Advanced', $this->ns ),
-			array($this,'lazyloadxt_advanced_render'),
-			'advancedSettings',
-			'lazyloadxt_advanced_section' 
-		);
-
 	}
 
 
@@ -169,6 +134,21 @@ class LazyLoadXTSettings {
 				<input type='checkbox' id='lazyloadxt_minimize_scripts' name='lazyloadxt_general[lazyloadxt_minimize_scripts]' <?php checked( $options['lazyloadxt_minimize_scripts'], 1 ); ?> value="1">
 				<?php _e('Load minimized versions of javascript and css files.', $this->ns ); ?>
 			</label>
+			<br />
+			<label for="lazyloadxt_cdn">
+				<input type='checkbox' id='lazyloadxt_cdn' name='lazyloadxt_general[lazyloadxt_cdn]' <?php $this->checked_r( $options, 'lazyloadxt_cdn', 1 ); ?> value="1">
+				<?php _e('Load scripts from cdnjs.','lazy-load-xt'); ?>
+			</label>
+			<br />
+			<label for="lazyloadxt_footer">
+				<input type='checkbox' id='lazyloadxt_footer' name='lazyloadxt_general[lazyloadxt_footer]' <?php $this->checked_r( $options, 'lazyloadxt_footer', 1 ); ?> value="1">
+				<?php _e('Load scripts in the footer.','lazy-load-xt'); ?>
+			</label>
+		</fieldset>
+		<fieldset>
+			<legend class="screen-reader-text">
+				<span><?php _e('Lazy Load settings','lazy-load-xt'); ?></span>
+			</legend>
 			<br />
 			<label for="lazyloadxt_load_extras">
 				<input type='checkbox' id='lazyloadxt_load_extras' name='lazyloadxt_general[lazyloadxt_load_extras]' <?php checked( $options['lazyloadxt_load_extras'], 1 ); ?> value="1">
@@ -234,12 +214,6 @@ class LazyLoadXTSettings {
 				<?php _e('Enable script-based tagging.', $this->ns ); ?>
 			</label>
 			<br />
-			<?php /* ?>
-			<label for="lazyloadxt_responsive_images">
-				<input type='checkbox' id='lazyloadxt_responsive_images' name='lazyloadxt_addons[lazyloadxt_responsive_images]' <?php checked( $options['lazyloadxt_responsive_images'], 1 ); ?> value="1">
-			</label>
-			<br />
-			<?php */ ?>
 			<label for="lazyloadxt_print">
 				<input type='checkbox' id='lazyloadxt_print' name='lazyloadxt_addons[lazyloadxt_print]' <?php checked( $options['lazyloadxt_print'], 1 ); ?> value="1">
 				<?php _e('Make sure lazy loaded elements appear in the print view.', $this->ns ); ?>
@@ -292,28 +266,6 @@ class LazyLoadXTSettings {
 			<legend class="screen-reader-text">
 				<span><?php _e('Advanced settings', $this->ns ); ?></span>
 			</legend>
-			<?php /* 
-			<label for="lazyloadxt_autoInit">
-				<input type='checkbox' id='lazyloadxt_autoInit' name='lazyloadxt_advanced[lazyloadxt_autoInit]' <?php checked( $options['lazyloadxt_autoInit'], 1 ); ?> value="1">
-				<?php _e('autoInit', $this->ns ); ?>
-			</label>
-			<br />
-			<label for="lazyloadxt_selector">
-				<input type='text' id='lazyloadxt_selector' name='lazyloadxt_advanced[lazyloadxt_selector]' value="<?php echo $options['lazyloadxt_selector']; ?>">
-				<p class="description"><?php _e('selector', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_srcAttr">
-				<input type='text' id='lazyloadxt_srcAttr' name='lazyloadxt_advanced[lazyloadxt_srcAttr]' value="<?php echo $options['lazyloadxt_srcAttr']; ?>">
-				<p class="description"><?php _e('srcAttr', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_blankImage">
-				<input type='text' id='lazyloadxt_blankImage' name='lazyloadxt_advanced[lazyloadxt_blankImage]' value="<?php echo $options['lazyloadxt_blankImage']; ?>">
-				<p class="description"><?php _e('blankImage', $this->ns ); ?></p>
-			</label>
-			<br />
-			*/ ?>
 			<label for="lazyloadxt_edgeY">
 				<input type='number' id='lazyloadxt_edgeY' name='lazyloadxt_advanced[lazyloadxt_edgeY]' value="<?php echo $options['lazyloadxt_edgeY']; ?>">
 				<p class="description"><strong>edgeY:</strong> <?php _e('Expand visible page area (viewport) in vertical direction by specified amount of pixels, so that elements start to load even if they are not visible, but will be visible after scroll by edgeY pixels', $this->ns ); ?></p>
@@ -328,73 +280,6 @@ class LazyLoadXTSettings {
 				<input type='number' id='lazyloadxt_throttle' name='lazyloadxt_advanced[lazyloadxt_throttle]' value="<?php echo $options['lazyloadxt_throttle']; ?>">
 				<p class="description"><strong>throttle:</strong> <?php _e('Time interval (in ms) to check for visible elements, the plugin uses it to speed up page work in the case of flow of page change events.', $this->ns ); ?></p>
 			</label>
-			<?php /*
-			<br />
-			<label for="lazyloadxt_visibleOnly">
-				<input type='checkbox' id='lazyloadxt_visibleOnly' name='lazyloadxt_advanced[lazyloadxt_visibleOnly]' <?php checked( $options['lazyloadxt_visibleOnly'], 1 ); ?> value="1">
-				<?php _e('visibleOnly', $this->ns ); ?>
-			</label>
-			<br />
-			<label for="lazyloadxt_checkDuplicates">
-				<input type='checkbox' id='lazyloadxt_checkDuplicates' name='lazyloadxt_advanced[lazyloadxt_checkDuplicates]' <?php checked( $options['lazyloadxt_checkDuplicates'], 1 ); ?> value="1">
-				<?php _e('checkDuplicates', $this->ns ); ?>
-			</label>
-			<br />
-			<label for="lazyloadxt_scrollContainer">
-				<input type='text' id='lazyloadxt_scrollContainer' name='lazyloadxt_advanced[lazyloadxt_scrollContainer]' value="<?php echo $options['lazyloadxt_scrollContainer']; ?>">
-				<p class="description"><?php _e('scrollContainer', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_forceLoad">
-				<input type='checkbox' id='lazyloadxt_forceLoad' name='lazyloadxt_advanced[lazyloadxt_forceLoad]' <?php checked( $options['lazyloadxt_forceLoad'], 1 ); ?> value="1">
-				<?php _e('forceLoad', $this->ns ); ?>
-			</label>
-			<br />
-			<label for="lazyloadxt_loadEvent">
-				<input type='text' id='lazyloadxt_loadEvent' name='lazyloadxt_advanced[lazyloadxt_loadEvent]' value="<?php echo $options['lazyloadxt_loadEvent']; ?>">
-				<p class="description"><?php _e('loadEvent', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_updateEvent">
-				<input type='text' id='lazyloadxt_updateEvent' name='lazyloadxt_advanced[lazyloadxt_updateEvent]' value="<?php echo $options['lazyloadxt_updateEvent']; ?>">
-				<p class="description"><?php _e('updateEvent', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_updateEvent">
-				<input type='text' id='lazyloadxt_updateEvent' name='lazyloadxt_advanced[lazyloadxt_updateEvent]' value="<?php echo $options['lazyloadxt_updateEvent']; ?>">
-				<p class="description"><?php _e('updateEvent', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_forceEvent">
-				<input type='text' id='lazyloadxt_forceEvent' name='lazyloadxt_advanced[lazyloadxt_forceEvent]' value="<?php echo $options['lazyloadxt_forceEvent']; ?>">
-				<p class="description"><?php _e('forceEvent', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_oninit">
-				<input type='text' id='lazyloadxt_oninit' name='lazyloadxt_advanced[lazyloadxt_oninit]' value="<?php echo $options['lazyloadxt_oninit']; ?>">
-				<p class="description"><?php _e('oninit', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_onshow">
-				<input type='text' id='lazyloadxt_onshow' name='lazyloadxt_advanced[lazyloadxt_onshow]' value="<?php echo $options['lazyloadxt_onshow']; ?>">
-				<p class="description"><?php _e('onshow', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_onload">
-				<input type='text' id='lazyloadxt_onload' name='lazyloadxt_advanced[lazyloadxt_onload]' value="<?php echo $options['lazyloadxt_onload']; ?>">
-				<p class="description"><?php _e('onload', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_onerror">
-				<input type='text' id='lazyloadxt_onerror' name='lazyloadxt_advanced[lazyloadxt_onerror]' value="<?php echo $options['lazyloadxt_onerror']; ?>">
-				<p class="description"><?php _e('onerror', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_oncomplete">
-				<input type='text' id='lazyloadxt_oncomplete' name='lazyloadxt_advanced[lazyloadxt_oncomplete]' value="<?php echo $options['lazyloadxt_oncomplete']; ?>">
-				<p class="description"><?php _e('oncomplete', $this->ns ); ?></p>
-			</label>
-			*/ ?>
 		</fieldset>
 		<?php
 
@@ -402,24 +287,8 @@ class LazyLoadXTSettings {
 
 
 	function lazyloadxt_basic_section_callback() { 
-
 		_e( 'Customize the basic features of Lazy Load XT.', $this->ns );
-
 	}
-
-	function lazyloadxt_advanced_enabled_callback() { 
-
-		_e( 'Enable advanced settings for Lazy Load XT.', $this->ns );
-
-	}
-
-	function lazyloadxt_advanced_section_callback() { 
-		_e( 'Customize the advanced features of Lazy Load XT. ', $this->ns );
-		_e( 'Visit <a href="https://github.com/ressio/lazy-load-xt">Lazy Load XT</a> on GitHub for a detailed explanation.', $this->ns );
-
-	}
-
-	
 
 
 	function settings_page() { 
@@ -427,12 +296,6 @@ class LazyLoadXTSettings {
 		?>
 		<div class="wrap">
 			<h2><?php _e('Lazy Load XT'); ?></h2>
-			<ul class="subsubsub" id="lazyloadxt-menu" style='overflow: auto;'>
-				<li class="basic"><a href="#" class="basic">Basic Settings</a> |</li>
-				<li class="advanced"><a href="#" class="advanced">Advanced Settings</a></li>
-			</ul>
-			<br />
-			<br />
 			<form id="basic" action='options.php' method='post' style='clear:both;'>
 				<?php
 				settings_fields( 'basicSettings' );
@@ -440,16 +303,15 @@ class LazyLoadXTSettings {
 				submit_button();
 				?>
 			</form>
-			<form id="advanced" action='options.php' method='post' style='clear:both;'>
-				<?php
-				settings_fields( 'advancedSettings' );
-				do_settings_sections( 'advancedSettings' );
-				submit_button();
-				?>
-			</form>
 		</div>
 		<?php
 
+	}
+
+	function checked_r($option, $key, $current = true, $echo = true) {
+		if (is_array($option) && array_key_exists($key, $option)) {
+			checked( $option[$key],$current,$echo );
+		}
 	}
 
 }
