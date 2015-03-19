@@ -3,7 +3,7 @@ Contributors: dbhynds
 Tags: Lazy Load, Lazy Load XT, iframe, image, media, video, YouTube, Vimeo
 Requires at least: 3.1
 Tested up to: 4.1.1
-Stable tag: 0.2.0
+Stable tag: 0.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,7 @@ Ask some questions.
 * Fix UTF-8 problems
 * Enable script-based tagging
 * Lazy load gravatars
+* Enable loading scripts from CDN and in footer
 
 = 0.2 =
 * Lazy load HTML5 elements

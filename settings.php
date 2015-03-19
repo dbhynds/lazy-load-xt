@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class LazyLoadXTSettings {
 
-	protected $ver = '0.3.0'; // Plugin version
+	protected $ver = '0.3.1'; // Plugin version
 	protected $ns = 'lazy-load-xt';
 	protected $defaults = array(
 			'general' => array(
@@ -12,6 +12,7 @@ class LazyLoadXTSettings {
 					'lazyloadxt_thumbnails' => 1,
 					'lazyloadxt_textwidgets' => 1,
 					'lazyloadxt_avatars' => 1,
+					'lazyloadxt_excludeclasses' => '',
 					'lazyloadxt_img' => 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
 				),
 		);
@@ -81,7 +82,6 @@ class LazyLoadXTSettings {
 	}
 
 	function lazyloadxt_settings_init() {
-		$this->update();
 
 		register_setting( 'basicSettings', 'lazyloadxt_general' );
 		register_setting( 'basicSettings', 'lazyloadxt_effects' );
@@ -229,56 +229,6 @@ class LazyLoadXTSettings {
 				<?php _e('Lazy load background images.', $this->ns ); ?>
 				<p class="description"><?php _e('Note: You must add the attribute "data-bg" with a value of path to the image to elements with a background image.', $this->ns ); ?></p>
 				<p class="description"><?php _e('E.g. "&lt;div data-bg="/path/to/image.png"&gt;...&lt;/div&gt;"', $this->ns ); ?></p>
-			</label>
-		</fieldset>
-		<?php
-
-	}
-
-
-	function lazyloadxt_advanced_enabled_render() {
-
-		$options = get_option( 'lazyloadxt_advanced' )
-		?>
-		<fieldset>
-			<legend class="screen-reader-text">
-				<span><?php _e('Enable advanced settings', $this->ns ); ?></span>
-			</legend>
-			<label title="Enabled">
-				<input type="radio" name="lazyloadxt_advanced[lazyloadxt_enabled]" value="1" <?php checked( $options['lazyloadxt_enabled'], 1 ); ?>>
-				<span>Enabled</span>
-			</label>
-			<br>
-			<label title="Disabled">
-				<input type="radio" name="lazyloadxt_advanced[lazyloadxt_enabled]" value="0" <?php checked( $options['lazyloadxt_enabled'], 0 ); ?>>
-				<span>Disabled</span>
-			</label>
-		</fieldset>
-		<?php
-
-	}
-
-	function lazyloadxt_advanced_render() {
-
-		$options = get_option( 'lazyloadxt_advanced' );
-		?>
-		<fieldset>
-			<legend class="screen-reader-text">
-				<span><?php _e('Advanced settings', $this->ns ); ?></span>
-			</legend>
-			<label for="lazyloadxt_edgeY">
-				<input type='number' id='lazyloadxt_edgeY' name='lazyloadxt_advanced[lazyloadxt_edgeY]' value="<?php echo $options['lazyloadxt_edgeY']; ?>">
-				<p class="description"><strong>edgeY:</strong> <?php _e('Expand visible page area (viewport) in vertical direction by specified amount of pixels, so that elements start to load even if they are not visible, but will be visible after scroll by edgeY pixels', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_edgeX">
-				<input type='number' id='lazyloadxt_edgeX' name='lazyloadxt_advanced[lazyloadxt_edgeX]' value="<?php echo $options['lazyloadxt_edgeX']; ?>">
-				<p class="description"><strong>edgeX:</strong> <?php _e('Expand visible page area in horizontal direction by specified amount of pixels', $this->ns ); ?></p>
-			</label>
-			<br />
-			<label for="lazyloadxt_throttle">
-				<input type='number' id='lazyloadxt_throttle' name='lazyloadxt_advanced[lazyloadxt_throttle]' value="<?php echo $options['lazyloadxt_throttle']; ?>">
-				<p class="description"><strong>throttle:</strong> <?php _e('Time interval (in ms) to check for visible elements, the plugin uses it to speed up page work in the case of flow of page change events.', $this->ns ); ?></p>
 			</label>
 		</fieldset>
 		<?php
