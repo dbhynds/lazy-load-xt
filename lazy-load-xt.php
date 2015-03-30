@@ -45,18 +45,18 @@ class LazyLoadXT {
 			add_action( 'wp_enqueue_scripts', array($this,'load_scripts') );
 			
 			// Replace the 'src' attr with 'data-src' in the_content
-			add_filter( 'the_content', array($this,'the_content_filter') );
+			add_filter( 'the_content', array($this,'filter_html') );
 			// If enabled replace the 'src' attr with 'data-src' in text widgets
 			if ($this->settings['textwidgets']) {
-				add_filter( 'widget_text', array($this,'the_content_filter') );
+				add_filter( 'widget_text', array($this,'filter_html') );
 			}
 			// If enabled replace the 'src' attr with 'data-src' in the_post_thumbnail
 			if ($this->settings['thumbnails']) {
-				add_filter( 'post_thumbnail_html', array($this,'the_content_filter') );
+				add_filter( 'post_thumbnail_html', array($this,'filter_html') );
 			}
 			// If enabled replace the 'src' attr with 'data-src' in the_post_thumbnail
 			if ($this->settings['avatars']) {
-				add_filter( 'get_avatar', array($this,'the_content_filter') );
+				add_filter( 'get_avatar', array($this,'filter_html') );
 			}
 		}
 		
@@ -179,7 +179,7 @@ class LazyLoadXT {
 		
 	}
 
-	function the_content_filter($content) {
+	function filter_html($content) {
 
 		if (is_feed()) {
 			return $content;
@@ -329,7 +329,11 @@ class LazyLoadXT {
 }
 
 // Init
-new LazyLoadXT;
+$lazyloadxt = new LazyLoadXT();
 
-
+// API
+function lazyloadxt_filter_html($html = '') {
+	global $lazyloadxt;
+	return $lazyloadxt->filter_html($html);
+}
 
