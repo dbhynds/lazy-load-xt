@@ -324,7 +324,9 @@ class LazyLoadXT {
 }
 
 // Init
-$lazyloadxt = new LazyLoadXT;
+if (!is_feed()) { 
+	$lazyloadxt = new LazyLoadXT;
+}
 
 
 
