@@ -329,7 +329,7 @@ class LazyLoadXT {
 }
 
 // Init
-$lazyloadxt = new LazyLoadXT;
+new LazyLoadXT;
 
 
 
