@@ -3,7 +3,7 @@ Contributors: dbhynds
 Tags: Lazy Load, Lazy Load XT, iframe, image, media, video, YouTube, Vimeo
 Requires at least: 3.1
 Tested up to: 4.1.1
-Stable tag: 0.3.1
+Stable tag: 0.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,12 @@ This plugin works by loading the Lazy Load XT script and replacing the `src` att
 Ask some questions.
 
 == Changelog ==
+
+= 0.3.2 =
+* Error when using checked() and undefined index
+
+= 0.3.1 =
+* Fix typos and undefined indexes
 
 = 0.3 =
 * Parse HTML with regex instead of PHP's DOMDocument

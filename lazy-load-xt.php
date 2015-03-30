@@ -1,7 +1,7 @@
 <?php
 /**
  * @package Lazy_Load_XT
- * @version 0.3.1
+ * @version 0.3.2
  */
 /*
 Plugin Name: Lazy Load XT
@@ -9,7 +9,7 @@ Plugin URI: http://wordpress.org/plugins/lazy-load-xt/
 Description: Lazy Load XT is the fastest, lightest, fully customizable lazy load plugin in the WordPress Plugin Directory. Lazy load images, YouTube and Vimeo videos, and iframes using <a href="https://github.com/ressio/lazy-load-xt" target="_blank">Lazy Load XT</a>.
 Author: Davo Hynds
 Author URI: http://www.mightybytes.com/
-Version: 0.3.1
+Version: 0.3.2
 Text Domain: lazy-load-xt
 */
 
