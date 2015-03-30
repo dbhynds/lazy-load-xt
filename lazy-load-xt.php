@@ -180,6 +180,11 @@ class LazyLoadXT {
 	}
 
 	function the_content_filter($content) {
+
+		if (is_feed()) {
+			return $content;
+		}
+
 		// If there's anything there, replace the 'src' with 'data-src'
 		if (strlen($content)) {
 			$newcontent = $content;
@@ -324,9 +329,7 @@ class LazyLoadXT {
 }
 
 // Init
-if (!is_feed()) { 
-	$lazyloadxt = new LazyLoadXT;
-}
+$lazyloadxt = new LazyLoadXT;
 
 
 
