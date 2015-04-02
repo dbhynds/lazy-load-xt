@@ -177,7 +177,7 @@ class LazyLoadXT {
 		if ( $this->settings['deferred_load'] ) {
 			wp_enqueue_script( 'lazy-load-xt-deferred', $script_url_pre.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
-		// Enqueue ajax if enabled
+		// Enqueue deferred load if enabled
 		if ( $this->settings['ajax'] ) {
 			wp_enqueue_script( 'lazy-load-xt-ajax', $script_url_pre.'.ajax.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
