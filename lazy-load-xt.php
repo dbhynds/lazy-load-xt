@@ -80,6 +80,7 @@ class LazyLoadXT {
 				'thumbnails',
 				'avatars',
 				'textwidgets',
+				'ajax',
 				'excludeclasses',
 				'fade_in',
 				'spinner',
@@ -175,6 +176,10 @@ class LazyLoadXT {
 		// Enqueue deferred load if enabled
 		if ( $this->settings['deferred_load'] ) {
 			wp_enqueue_script( 'lazy-load-xt-deferred', $script_url_pre.'.autoload'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
+		}
+		// Enqueue ajax if enabled
+		if ( $this->settings['ajax'] ) {
+			wp_enqueue_script( 'lazy-load-xt-ajax', $script_url_pre.'.ajax.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
 		
 	}
@@ -331,7 +336,9 @@ class LazyLoadXT {
 // Init
 $lazyloadxt = new LazyLoadXT();
 
-// API
+/* API */
+
+// Filter HTML for lazy loading
 function lazyloadxt_filter_html($html = '') {
 	global $lazyloadxt;
 	return $lazyloadxt->filter_html($html);

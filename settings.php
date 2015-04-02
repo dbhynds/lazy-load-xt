@@ -175,6 +175,11 @@ class LazyLoadXTSettings {
 				<textarea id='lazyloadxt_excludeclasses' name='lazyloadxt_general[lazyloadxt_excludeclasses]' rows="3" cols="60"><?php echo $options['lazyloadxt_excludeclasses']; ?></textarea>
 				<p class="description"><?php _e('Prevent objects with the above classes from being lazy loaded. (List classes separated by a space and without the proceding period. e.g. "skip-lazy-load size-thumbnail".)', $this->ns ); ?></p>
 			</label>
+			<br />
+			<label for="lazyloadxt_ajax">
+				<input type='checkbox' id='lazyloadxt_ajax' name='lazyloadxt_general[lazyloadxt_ajax]' <?php $this->checked_r( $options, 'lazyloadxt_ajax', 1 ); ?> value="1">
+				<?php _e('Enable AJAX navigation.', $this->ns ); ?>
+			</label>
 		</fieldset>
 		<?php
 
