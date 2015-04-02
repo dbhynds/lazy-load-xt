@@ -178,7 +178,7 @@ class LazyLoadXTSettings {
 			<br />
 			<label for="lazyloadxt_ajax">
 				<input type='checkbox' id='lazyloadxt_ajax' name='lazyloadxt_general[lazyloadxt_ajax]' <?php $this->checked_r( $options, 'lazyloadxt_ajax', 1 ); ?> value="1">
-				<?php _e('Enable AJAX navigation.', $this->ns ); ?>
+				<?php _e('Enable AJAX navigation (infinite scroll, lightbox, etc).', $this->ns ); ?>
 			</label>
 		</fieldset>
 		<?php
