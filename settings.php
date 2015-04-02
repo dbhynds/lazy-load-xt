@@ -4,8 +4,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class LazyLoadXTSettings {
 
-	protected $ver = '0.3.2'; // Plugin version
-	protected $ns = 'lazy-load-xt';
+	const ver = '0.3.2'; // Plugin version
+	const ns = 'lazy-load-xt';
 	protected $defaults = array(
 			'general' => array(
 					'lazyloadxt_minimize_scripts' => 1,
@@ -52,7 +52,7 @@ class LazyLoadXTSettings {
 			} elseif (version_compare($dbver,'0.3','<=')) {
 				$this->upgrade('0.3');
 			}
-			update_option('lazyloadxt_version',$this->ver);
+			update_option('lazyloadxt_version',$ver);
 		}
 	}
 
