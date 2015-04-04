@@ -27,9 +27,21 @@ This plugin works by loading the Lazy Load XT script and replacing the `src` att
 
 ## Frequently Asked Questions
 
-None right now. Ask some!
+### Why aren't my images lazy loading?
+
+Lazy Load XT filters images added to the page using `the_content`, `post_thumbnail_html`, `widget_text` and `get_avatar`. If your images are added using another function (`wp_get_attachment_image` for example), Lazy Load XT does not filter them. However, as of v0.4, you can filter the HTML yourself by passing it to `lazyloadxt_filter_html`.
+
+For example, if a theme has:
+`echo wp_get_attachment_image($id);`
+Changing it to the following would lazy load the image:
+`echo lazyloadxt_filter_html( wp_get_attachment_image($id) );`
 
 ## Changelog
+
+### 0.4 - coming soon
+* Added `lazyloadxt_filter_html()` to let users pass HTML to be filtered
+* Disabled filtering HTML for RSS Feeds
+* Added support for content loaded via AJAX
 
 ### 0.3.1
 * Fix some typos
