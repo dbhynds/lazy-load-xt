@@ -179,6 +179,7 @@ class LazyLoadXT {
 		}
 		// Enqueue deferred load if enabled
 		if ( $this->settings['ajax'] ) {
+			// Don't load it from the CDN
 			wp_enqueue_script( 'lazy-load-xt-ajax', $this->dir.'js/'.$jqll.'.ajax.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver, $footer );
 		}
 		
