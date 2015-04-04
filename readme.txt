@@ -19,15 +19,31 @@ This plugin works by loading the Lazy Load XT script and replacing the `src` att
 
 == Installation ==
 
+1. Install and activate the plugin through the 'Plugins' menu in WordPress
+
+or
+
 1. Download and unzip Lazy Load XT.
-1. Upload the `lazy-load-xt` directory to the `/wp-content/plugins/` directory
+1. Upload the `lazy-load-xt` folder to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Frequently Asked Questions ==
 
-Ask some questions.
+= Why aren't my images lazy loading? =
+
+Lazy Load XT filters images added to the page using `the_content`, `post_thumbnail_html`, `widget_text` and `get_avatar`. If your images are added using another function (`wp_get_attachment_image` for example), Lazy Load XT does not filter them. However, as of v0.4, you can filter the HTML yourself by passing it to `lazyloadxt_filter_html`.
+
+For example, if a theme has:
+`echo wp_get_attachment_image($id);`
+Changing it to the following would lazy load the image:
+`echo lazyloadxt_filter_html( wp_get_attachment_image($id) );`
 
 == Changelog ==
+
+= 0.4 =
+* Added `lazyloadxt_filter_html()` to let users pass HTML to be filtered
+* Disabled filtering HTML for RSS Feeds
+* Added support for content loaded via AJAX
 
 = 0.3.2 =
 * Error when using checked() and undefined index
