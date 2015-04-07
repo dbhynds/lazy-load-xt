@@ -137,7 +137,7 @@ class LazyLoadXTSettings {
 			<br />
 			<label for="lazyloadxt_cdn">
 				<input type='checkbox' id='lazyloadxt_cdn' name='lazyloadxt_general[lazyloadxt_cdn]' <?php $this->checked_r( $options, 'lazyloadxt_cdn', 1 ); ?> value="1">
-				<?php _e('Load scripts from cdnjs.','lazy-load-xt'); ?>
+				<?php _e('Load scripts from cdnjs (v1.0.5).','lazy-load-xt'); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_footer">
@@ -195,12 +195,12 @@ class LazyLoadXTSettings {
 			</legend>
 			<label for="lazyloadxt_fade_in">
 				<input type='checkbox' id='lazyloadxt_fade_in' name='lazyloadxt_effects[lazyloadxt_fade_in]' <?php $this->checked_r( $options, 'lazyloadxt_fade_in', 1 ); ?> value="1">
-				<?php _e('Fade in lazy loaded objects', $this::ns ); ?>
+				<?php _e('Fade in lazy loaded objects.', $this::ns ); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_spinner">
 				<input type='checkbox' id='lazyloadxt_spinner' name='lazyloadxt_effects[lazyloadxt_spinner]' <?php $this->checked_r( $options, 'lazyloadxt_spinner', 1 ); ?> value="1">
-				<?php _e('Show spinner while objects are loading', $this::ns ); ?>
+				<?php _e('Show spinner while objects are loading.', $this::ns ); ?>
 			</label>
 		</fieldset>
 		<?php
