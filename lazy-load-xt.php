@@ -250,7 +250,7 @@ class LazyLoadXT {
 							// If the element requires a 'src', set the src to default image
 							$src = (in_array($tag, $src_req)) ? ' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"' : '';
 							// If the element is an audio tag, set the src to a blank mp3
-							$src = ($tag == 'audio') ? $this->dir.'assets/empty.mp3' : $src;
+							$src = ($tag == 'audio') ? ' src="'.$this->dir.'assets/empty.mp3"' : $src;
 
 							// Set replace html
 							$replace_markup = $match;
