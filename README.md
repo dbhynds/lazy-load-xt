@@ -21,9 +21,13 @@ This plugin works by loading the Lazy Load XT script and replacing the `src` att
 
 ## Installation
 
-1.	Download and unzip [Lazy Load XT](https://wordpress.org/plugins/lazy-load-xt/).
-2.	Upload the `lazy-load-xt` directory to the `/wp-content/plugins/` directory
-3.	Activate the plugin through the 'Plugins' menu in WordPress
+1. Install and activate the plugin through the 'Plugins' menu in WordPress
+
+or
+
+1. Download and unzip Lazy Load XT.
+2. Upload the `lazy-load-xt` folder to the `/wp-content/plugins/` directory
+3. Activate the plugin through the 'Plugins' menu in WordPress
 
 ## Frequently Asked Questions
 
