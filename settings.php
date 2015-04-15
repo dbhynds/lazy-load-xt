@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class LazyLoadXTSettings {
 
-	const ver = '0.3.2'; // Plugin version
+	const ver = '0.4.0'; // Plugin version
 	const ns = 'lazy-load-xt';
 	protected $defaults = array(
 			'general' => array(
