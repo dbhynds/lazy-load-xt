@@ -285,8 +285,8 @@ $lazyloadxt = new LazyLoadXT();
 
 /* API */
 
-// Filter HTML for lazy loading
-function lazyloadxt_filter_html($html = '') {
+// Pass HTML to this function to filter it for lazy loading
+function get_lazyloadxt_html($html = '') {
 	global $lazyloadxt;
 	return $lazyloadxt->filter_html($html);
 }
