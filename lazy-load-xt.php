@@ -227,7 +227,7 @@ class LazyLoadXT {
 			$tag_end = ($self_closing) ? '\/' : '\/'.$tag;
 
 			// Look for tag in content
-			preg_match_all('/<'.$tag.'[\s\r\n]+.*?'.$tag_end.'>/is',$content,$matches);
+			preg_match_all('/<'.$tag.'[\s\r\n]+.*?'.$tag_end.'>(?!<noscript>|<\/noscript>)/is',$content,$matches);
 
 			// If tags exist, loop through them and replace stuff
 			if (count($matches[0])) {
