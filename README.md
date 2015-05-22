@@ -42,7 +42,10 @@ Changing it to the following would lazy load the image:
 
 ## Changelog
 
-### 0.4 - coming soon
+### 0.4.1
+* Tweaked regex for iframes
+
+### 0.4
 * Added `lazyloadxt_filter_html()` to let users pass HTML to be filtered
 * Disabled filtering HTML for RSS Feeds
 * Added support for content loaded via AJAX
