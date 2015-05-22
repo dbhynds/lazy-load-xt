@@ -1,15 +1,11 @@
 <?php
-/**
- * @package Lazy_Load_XT
- * @version 0.4.0
- */
 /*
 Plugin Name: Lazy Load XT
 Plugin URI: http://wordpress.org/plugins/lazy-load-xt/
 Description: Lazy Load XT is the fastest, lightest, fully customizable lazy load plugin in the WordPress Plugin Directory. Lazy load images, YouTube and Vimeo videos, and iframes using <a href="https://github.com/ressio/lazy-load-xt" target="_blank">Lazy Load XT</a>.
 Author: Davo Hynds
 Author URI: http://www.mightybytes.com/
-Version: 0.4.0
+Version: 0.4.1
 Text Domain: lazy-load-xt
 */
 
@@ -224,10 +220,10 @@ class LazyLoadXT {
 			// Is the tag self closing?
 			$self_closing = in_array($tag, array('img','embed','source'));
 			// Set tag end, depending of if it's self-closing
-			$tag_end = ($self_closing) ? '\/' : '\/'.$tag;
+			$tag_end = ($self_closing) ? '\/' : '<\/'.$tag;
 
 			// Look for tag in content
-			preg_match_all('/<'.$tag.'[\s\r\n]([^<]+)'.$tag_end.'>(?!<noscript>|<\/noscript>)/is',$content,$matches);
+			preg_match_all('/<'.$tag.'[\s\r\n]([^<]+)('.$tag_end.'>)(?!<noscript>|<\/noscript>)/is',$content,$matches);
 
 			// If tags exist, loop through them and replace stuff
 			if (count($matches[0])) {
@@ -290,4 +286,3 @@ function get_lazyloadxt_html($html = '') {
 	global $lazyloadxt;
 	return $lazyloadxt->filter_html($html);
 }
-

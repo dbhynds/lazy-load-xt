@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class LazyLoadXTSettings {
 
-	const ver = '0.4.0'; // Plugin version
+	const ver = '0.4.1'; // Plugin version
 	const ns = 'lazy-load-xt';
 	protected $defaults = array(
 			'general' => array(
@@ -43,7 +43,6 @@ class LazyLoadXTSettings {
 	}
 	
 	function update() {
-		$defaults = $this->defaults;
 		$ver = $this->ver;
 		$dbver = get_option('lazyloadxt_version','');
 		if (version_compare($ver,$dbver,'>')) {
@@ -270,5 +269,3 @@ class LazyLoadXTSettings {
 	}
 
 }
-
-

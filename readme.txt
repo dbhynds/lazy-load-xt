@@ -2,7 +2,7 @@
 Contributors: dbhynds
 Tags: Lazy Load, Lazy Load XT, iframe, image, media, video, YouTube, Vimeo
 Requires at least: 3.1
-Tested up to: 4.1.2
+Tested up to: 4.2.2
 Stable tag: 0.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -39,6 +39,9 @@ Changing it to the following would lazy load the image:
 `echo get_lazyloadxt_html( wp_get_attachment_image($id) );`
 
 == Changelog ==
+
+= 0.4.1 =
+* Tweaked regex for iframes
 
 = 0.4 =
 * Added `get_lazyloadxt_html()` to let users pass HTML to be filtered
