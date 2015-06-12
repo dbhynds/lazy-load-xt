@@ -9,16 +9,34 @@ Version: 0.4.1
 Text Domain: lazy-load-xt
 */
 
+// No script kiddies
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-
+/**
+ * Lazy Load XT class for handling all front end functionality.
+ *
+ * @since Lazy Load XT 0.1.0
+ *
+ * @var string $dir Directory where this plugin installed.
+ * @var string $lazyloadxt_ver Version of lazyloadxt.js (the script, not this plugin).
+ * @var class $settingsClass PHP Class used for the admin area.
+ * @var array $settings Settings for this plugin.
+ */
 class LazyLoadXT {
-	
-	protected $dir; // Plugin directory
-	protected $lazyloadxt_ver = '1.0.6'; // Version of Lazy Load XT (the script, not this plugin)
-	protected $settingsClass; // Settings class for admin area
-	protected $settings; // Settings for this plugin
+	protected $dir;
+	protected $lazyloadxt_ver = '1.0.6';
+	protected $settingsClass;
+	protected $settings;
 
+	/**
+	 * Initialize Lazy Load XT.
+	 *
+	 * Load the admin class if the user is in the area. Get options and hook into the WordPress API.
+	 *
+	 * @since Lazy Load XT 0.1.0
+	 *
+	 * @see LazyLoadXTSettings
+	 */
 	function __construct() {
 		
 		// If we're in the admin area, load the settings class
@@ -60,7 +78,17 @@ class LazyLoadXT {
 
 	}
 
-	function get_settings() {
+	/**
+	 * Get and set Lazy Load XT values saved in the options table.
+	 *
+	 * Description.
+	 *
+	 * @since Lazy Load XT 0.1.0
+	 * @access private
+	 *
+	 * @return array An associative array of settings.
+	 */
+	private function get_settings() {
 
 		// Get setting options from the db
 		$general = get_option('lazyloadxt_general');
@@ -123,8 +151,12 @@ class LazyLoadXT {
 		return $settings;
 
 	}
-	
-	function load_scripts() {
+	/**
+	 * Enqueue scripts and styles.
+	 *
+	 * @since Lazy Load XT 0.1.0
+	 */
+	public function load_scripts() {
 
 		// Are these minified?
 		$min = ($this->settings['minimize_scripts']) ? '.min' : '';
@@ -182,7 +214,17 @@ class LazyLoadXT {
 		
 	}
 
-	function filter_html($content) {
+	/**
+	 * Filter HTML content to use lazy load.
+	 *
+	 * Description.
+	 *
+	 * @since Lazy Load XT 0.4.0
+	 *
+	 * @param string $content HTML to be filtered.
+	 * @return strong Filtered HTML.
+	 */
+	public function filter_html($content) {
 
 		if (is_feed()) {
 			return $content;
@@ -203,8 +245,19 @@ class LazyLoadXT {
 			return $content;
 		}
 	}
-
-	function preg_replace_html($content,$tags) {
+	/**
+	 * Replace src attributes for data-src and add noscript tags.
+	 *
+	 * Description.
+	 *
+	 * @since Lazy Load XT 0.3.0
+	 * @access private
+	 *
+	 * @param string $content HTML content to filter.
+	 * @param array $tags List of tags to filter for.
+	 * @return string HTML content with data-src instead of src and noscript tags.
+	 */
+	private function preg_replace_html($content,$tags) {
 
 		$search = array();
 		$replace = array();
@@ -276,10 +329,8 @@ class LazyLoadXT {
 
 }
 
-// Init
+// Initialize Lazy Load XT
 $lazyloadxt = new LazyLoadXT();
-
-/* API */
 
 // Pass HTML to this function to filter it for lazy loading
 function get_lazyloadxt_html($html = '') {

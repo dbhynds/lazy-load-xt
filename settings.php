@@ -1,7 +1,19 @@
 <?php
-
+// No script kiddies
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
-
+/**
+ * Summary.
+ *
+ * Description.
+ *
+ * @since Lazy Load XT 0.1.0
+ *
+ * @see LazyLoadXT
+ *
+ * @var string $ver Version of the plugin.
+ * @var string $ns Namespace of the plugin.
+ * @var array $defaults Default values for options.
+ */
 class LazyLoadXTSettings {
 
 	const ver = '0.4.1'; // Plugin version
@@ -15,8 +27,19 @@ class LazyLoadXTSettings {
 					'lazyloadxt_excludeclasses' => '',
 					'lazyloadxt_img' => 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
 				),
+			'advanced' => array(
+					'lazyloadxt_enabled' => false,
+					'lazyloadxt_visibleOnly' => true,
+					'lazyloadxt_checkDuplicates' => true,
+					'lazyloadxt_forceLoad' => false,
+				),
 		);
 
+	/**
+	 * Load the Lazy Load XT Setting class and hook into the WordPress API.
+	 *
+	 * @since Lazy Load XT 0.1.0
+	 */
 	public function __construct() {
 		add_action( 'admin_menu', array($this,'lazyloadxt_add_admin_menu') );
 		add_action( 'admin_init', array($this,'lazyloadxt_settings_init') );
@@ -24,41 +47,72 @@ class LazyLoadXTSettings {
 		add_action( 'upgrader_process_complete', array($this,'update') );
 	}
 
+	/**
+	 * Set default option values when the plugin is activated.
+	 *
+	 * @since Lazy Load XT 0.1.0
+	 */
 	function first_time_activation() {
 		// Set default settings
-		$defaults = $this->defaults;
-		foreach ($defaults as $key => $val) {
+		foreach ($this->defaults as $key => $val) {
 			if (get_option('lazyloadxt_'.$key,false) == false) {
 				update_option('lazyloadxt_'.$key,$val);
 			}
 		}
 		update_option('lazyloadxt_version',$this->ver);
 	}
-	function upgrade($to) {
-		if ($to == '0.3') {
+
+	/**
+	 * Set default option values for new options when the plugin is updated.
+	 *
+	 * @since Lazy Load XT 0.3.0
+	 * @access private
+	 */
+	private function upgrade($to) {
+		if (version_compare($dbver,'0.2','<=')) {
+			$this->first_time_activation();
+		}
+		if (version_compare($to,'0.3','<=')) {
 			$general = get_option('lazyloadxt_general');
 			$general['lazyloadxt_avatars'] = $this->defaults['general']['lazyloadxt_avatars'];
 			update_option('lazyloadxt_general',$general);
 		}
+		if (version_compare($to,'1.0','<=')) {
+			if (get_option('lazyloadxt_advanced',false) == false) {
+				update_option($this->defaults['advanced']);
+			}
+		}
 	}
 	
+	/**
+	 * Update the plugin options if need be.
+	 *
+	 * @since Lazy Load XT 0.2.0
+	 */
 	function update() {
 		$ver = $this->ver;
 		$dbver = get_option('lazyloadxt_version','');
 		if (version_compare($ver,$dbver,'>')) {
-			if (version_compare($dbver,'0.2','<=')) {
-				$this->first_time_activation();
-			} elseif (version_compare($dbver,'0.3','<=')) {
-				$this->upgrade('0.3');
-			}
+			$this->upgrade($ver);
 			update_option('lazyloadxt_version',$ver);
 		}
 	}
 
 
+	/**
+	 * Add a link to the setting page in the admin.
+	 *
+	 * @since Lazy Load XT 0.1.0
+	 */
 	function lazyloadxt_add_admin_menu() { 
 		$admin_page = add_options_page( 'Lazy Load XT', 'Lazy Load XT', 'manage_options', 'lazyloadxt', array($this,'settings_page') );
 	}
+
+	/**
+	 * Enqueue admin style and register an action to ask users for feedback.
+	 *
+	 * @since Lazy Load XT 0.2.0
+	 */
 	function lazyloadxt_enqueue_admin() {
 		$screen = get_current_screen();
 		if ($screen->base == 'settings_page_lazyloadxt') {
@@ -67,7 +121,13 @@ class LazyLoadXTSettings {
 		}
 	}
 	
-	function ask_for_feedback() {
+	/**
+	 * Ask users for feedback about the plugin.
+	 *
+	 * @since Lazy Load XT 0.3.0
+	 * @access private
+	 */
+	private function ask_for_feedback() {
 	    ?>
 	    <div class="updated">
 	        <p><?php _e( 'Help improve Lazy Load XT: <a href="https://wordpress.org/support/plugin/lazy-load-xt" target="_blank">submit feedback, questions, and bug reports</a>.', $this::ns ); ?></p>
@@ -75,16 +135,30 @@ class LazyLoadXTSettings {
 	    <?php
 		wp_enqueue_script('thickbox');
 	}
-	function lazyloadxt_action_links( $links ) {
+
+	/**
+	 * This can probably die.
+	 *
+	 * @since Lazy Load XT 0.3.0
+	 * @access private
+	 */
+	private function lazyloadxt_action_links( $links ) {
 	    $links[] = '<a href="options-general.php?page=lazyloadxt">'.__('Settings',$this::ns).'</a>';
 	    return $links;
 	}
 
-	function lazyloadxt_settings_init() {
+	/**
+	 * Register settings for general, effects, addons and advanced.
+	 *
+	 * @since Lazy Load XT 0.1.0
+	 * @access private
+	 */
+	private function lazyloadxt_settings_init() {
 
 		register_setting( 'basicSettings', 'lazyloadxt_general' );
 		register_setting( 'basicSettings', 'lazyloadxt_effects' );
 		register_setting( 'basicSettings', 'lazyloadxt_addons' );
+		register_setting( 'basicSettings', 'lazyloadxt_advanced' );
 
 		add_settings_section(
 			'lazyloadxt_basic_section',
@@ -117,11 +191,25 @@ class LazyLoadXTSettings {
 			'lazyloadxt_basic_section' 
 		);
 
+		add_settings_field( 
+			'lazyloadxt_advanced',
+			__( 'Advanced', $this::ns ),
+			array($this,'lazyloadxt_advanced_render'),
+			'basicSettings',
+			'lazyloadxt_basic_section' 
+		);
+
 	}
 
 
 
-	function lazyloadxt_general_render() {
+	/**
+	 * Output HTML for General Settings.
+	 *
+	 * @since Lazy Load XT 0.1.0
+	 * @access private
+	 */
+	private function lazyloadxt_general_render() {
 
 		$options = get_option( 'lazyloadxt_general' );
 		?>
@@ -184,7 +272,13 @@ class LazyLoadXTSettings {
 
 	}
 
-	function lazyloadxt_effects_render() {
+	/**
+	 * Output HTML for Effects Settings.
+	 *
+	 * @since Lazy Load XT 0.1.0
+	 * @access private
+	 */
+	private function lazyloadxt_effects_render() {
 
 		$options = get_option( 'lazyloadxt_effects' );
 		?>
@@ -206,7 +300,13 @@ class LazyLoadXTSettings {
 
 	}
 
-	function lazyloadxt_addons_render() {
+	/**
+	 * Output HTML for AddOns Settings.
+	 *
+	 * @since Lazy Load XT 0.1.0
+	 * @access private
+	 */
+	private function lazyloadxt_addons_render() {
 
 		$options = get_option( 'lazyloadxt_addons' ); ?>
 		<fieldset>
@@ -239,13 +339,107 @@ class LazyLoadXTSettings {
 
 	}
 
+	/**
+	 * Output HTML for Advanced Settings.
+	 *
+	 * @since Lazy Load XT 0.5.0
+	 * @access private
+	 */
+	private function lazyloadxt_advanced_render() {
 
-	function lazyloadxt_basic_section_callback() { 
+		$options = get_option( 'lazyloadxt_advanced' ); ?>
+		<fieldset>
+			<legend class="screen-reader-text">
+				<span><?php _e( 'Advanced settings', $this::ns ); ?></span>
+			</legend>
+			<label for="lazyloadxt_enabled">
+				<input type='checkbox' id='lazyloadxt_enabled' name='lazyloadxt_advanced[lazyloadxt_enabled]' <?php $this->checked_r( $options, 'lazyloadxt_enabled', 1 ); ?> value="1">
+				<?php _e( 'Enable advanced options. ', $this::ns ); ?>
+				<p class="description"><?php _e( 'The following settings will only go into effect if advanced options are enabled.', $this::ns ); ?></p>
+				<p class="description"><?php _e( 'Refer to RESS.io\'s <a href="https://github.com/ressio/lazy-load-xt#options">documentation on github</a> for further explanation of each option.', $this::ns ); ?></p>
+			</label>
+			<br />
+			<?php
+			/*
+				autoInit
+				selector
+				srcAttr
+				blankImage
+			*/
+			?>
+			<label for="lazyloadxt_edgeY">
+				<?php _e( 'Edge Y:', $this::ns ); ?><br />
+				<input type='number' id='lazyloadxt_edgeY' name='lazyloadxt_advanced[lazyloadxt_edgeY]' value="<?php echo $options['lazyloadxt_edgeY']; ?>">
+				<?php _e( 'pixels', $this::ns ); ?>
+			</label>
+			<br />
+			<label for="lazyloadxt_edgeX">
+				<?php _e( 'Edge X:', $this::ns ); ?><br />
+				<input type='number' id='lazyloadxt_edgeX' name='lazyloadxt_advanced[lazyloadxt_edgeX]' value="<?php echo $options['lazyloadxt_edgeX']; ?>">
+				<?php _e( 'pixels', $this::ns ); ?>
+			</label>
+			<br />
+			<label for="lazyloadxt_throttle">
+				<?php _e( 'Throttle:', $this::ns ); ?><br />
+				<input type='number' id='lazyloadxt_throttle' name='lazyloadxt_advanced[lazyloadxt_throttle]' value="<?php echo $options['lazyloadxt_throttle']; ?>">
+				<?php _e( 'ms', $this::ns ); ?>
+			</label>
+			<br />
+			<label for="lazyloadxt_visibleOnly">
+				<input type='checkbox' id='lazyloadxt_visibleOnly' name='lazyloadxt_advanced[lazyloadxt_visibleOnly]' <?php $this->checked_r( $options, 'lazyloadxt_visibleOnly', 1 ); ?> value="1">
+				<?php _e( 'Visible only', $this::ns ); ?>
+			</label>
+			<br />
+			<label for="lazyloadxt_checkDuplicates">
+				<input type='checkbox' id='lazyloadxt_checkDuplicates' name='lazyloadxt_advanced[lazyloadxt_checkDuplicates]' <?php $this->checked_r( $options, 'lazyloadxt_checkDuplicates', 1 ); ?> value="1">
+				<?php _e( 'Check duplicates', $this::ns ); ?>
+			</label>
+			<br />
+			<?php
+			/*
+				scrollContainer
+			*/
+			?>
+			<label for="lazyloadxt_forceLoad">
+				<input type='checkbox' id='lazyloadxt_forceLoad' name='lazyloadxt_advanced[lazyloadxt_forceLoad]' <?php $this->checked_r( $options, 'lazyloadxt_forceLoad', 1 ); ?> value="1">
+				<?php _e( 'Force load', $this::ns ); ?>
+			</label>
+			<br />
+			<?php /*
+				loadEvent
+				updateEvent
+				forceEvent
+				onInit
+				onshow
+				onload
+				onerror
+				oncomplete
+			*/
+			?>
+		</fieldset>
+		<?php
+
+	}
+
+
+	/**
+	 * Callback for the settings section.
+	 *
+	 * @since Lazy Load XT 0.1.0
+	 * @access private
+	 */
+	private function lazyloadxt_basic_section_callback() { 
 		_e( 'Customize the basic features of Lazy Load XT.', $this::ns );
 	}
 
 
-	function settings_page() { 
+	/**
+	 * Render the settings form.
+	 *
+	 * @since Lazy Load XT 0.1.0
+	 * @access private
+	 */
+	private function settings_page() { 
 
 		?>
 		<div class="wrap">
@@ -262,7 +456,22 @@ class LazyLoadXTSettings {
 
 	}
 
-	function checked_r($option, $key, $current = true, $echo = true) {
+	/**
+	 * Check if an option exists and has a value to prevent undefined offsets.
+	 *
+	 * @since Lazy Load XT 0.3.0
+	 * @access private
+	 *
+	 * @see checked()
+	 * @link https://codex.wordpress.org/Function_Reference/checked
+	 *
+	 * @param array $option The array of options for a settings field.
+	 * @param string $key The array key to search for.
+	 * @param bool $current Optional. The other value to compare if not just true. Default: true
+	 * @param bool $echo Optional. Whether to echo or just return the string. Default: true
+	 * @return string HTML attribute (checked='checked') or empty string.
+	 */
+	private function checked_r($option, $key, $current = true, $echo = true) {
 		if (is_array($option) && array_key_exists($key, $option)) {
 			checked( $option[$key],$current,$echo );
 		}
