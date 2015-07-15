@@ -193,7 +193,7 @@ class LazyLoadXTSettings {
 
 		add_settings_field( 
 			'lazyloadxt_advanced',
-			__( 'Advanced', $this->ns ),
+			__( 'Advanced', self::ns ),
 			array($this,'lazyloadxt_advanced_render'),
 			'basicSettings',
 			'lazyloadxt_basic_section' 
@@ -350,13 +350,13 @@ class LazyLoadXTSettings {
 		$options = get_option( 'lazyloadxt_advanced' ); ?>
 		<fieldset>
 			<legend class="screen-reader-text">
-				<span><?php _e( 'Advanced settings', $this->ns ); ?></span>
+				<span><?php _e( 'Advanced settings', self::ns ); ?></span>
 			</legend>
 			<label for="lazyloadxt_enabled">
 				<input type='checkbox' id='lazyloadxt_enabled' name='lazyloadxt_advanced[lazyloadxt_enabled]' <?php $this->checked_r( $options, 'lazyloadxt_enabled', 1 ); ?> value="1">
-				<?php _e( 'Enable advanced options. ', $this->ns ); ?>
-				<p class="description"><?php _e( 'The following settings will only go into effect if advanced options are enabled.', $this->ns ); ?></p>
-				<p class="description"><?php _e( 'Refer to RESS.io\'s <a href="https://github.com/ressio/lazy-load-xt#options">documentation on github</a> for further explanation of each option.', $this->ns ); ?></p>
+				<?php _e( 'Enable advanced options. ', self::ns ); ?>
+				<p class="description"><?php _e( 'The following settings will only go into effect if advanced options are enabled.', self::ns ); ?></p>
+				<p class="description"><?php _e( 'Refer to RESS.io\'s <a href="https://github.com/ressio/lazy-load-xt#options">documentation on github</a> for further explanation of each option.', self::ns ); ?></p>
 			</label>
 			<br />
 			<?php
@@ -368,31 +368,31 @@ class LazyLoadXTSettings {
 			*/
 			?>
 			<label for="lazyloadxt_edgeY">
-				<?php _e( 'Edge Y:', $this->ns ); ?><br />
+				<?php _e( 'Edge Y:', self::ns ); ?><br />
 				<input type='number' id='lazyloadxt_edgeY' name='lazyloadxt_advanced[lazyloadxt_edgeY]' value="<?php echo $options['lazyloadxt_edgeY']; ?>">
-				<?php _e( 'pixels', $this->ns ); ?>
+				<?php _e( 'pixels', self::ns ); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_edgeX">
-				<?php _e( 'Edge X:', $this->ns ); ?><br />
+				<?php _e( 'Edge X:', self::ns ); ?><br />
 				<input type='number' id='lazyloadxt_edgeX' name='lazyloadxt_advanced[lazyloadxt_edgeX]' value="<?php echo $options['lazyloadxt_edgeX']; ?>">
-				<?php _e( 'pixels', $this->ns ); ?>
+				<?php _e( 'pixels', self::ns ); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_throttle">
-				<?php _e( 'Throttle:', $this->ns ); ?><br />
+				<?php _e( 'Throttle:', self::ns ); ?><br />
 				<input type='number' id='lazyloadxt_throttle' name='lazyloadxt_advanced[lazyloadxt_throttle]' value="<?php echo $options['lazyloadxt_throttle']; ?>">
-				<?php _e( 'ms', $this->ns ); ?>
+				<?php _e( 'ms', self::ns ); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_visibleOnly">
 				<input type='checkbox' id='lazyloadxt_visibleOnly' name='lazyloadxt_advanced[lazyloadxt_visibleOnly]' <?php $this->checked_r( $options, 'lazyloadxt_visibleOnly', 1 ); ?> value="1">
-				<?php _e( 'Visible only', $this->ns ); ?>
+				<?php _e( 'Visible only', self::ns ); ?>
 			</label>
 			<br />
 			<label for="lazyloadxt_checkDuplicates">
 				<input type='checkbox' id='lazyloadxt_checkDuplicates' name='lazyloadxt_advanced[lazyloadxt_checkDuplicates]' <?php $this->checked_r( $options, 'lazyloadxt_checkDuplicates', 1 ); ?> value="1">
-				<?php _e( 'Check duplicates', $this->ns ); ?>
+				<?php _e( 'Check duplicates', self::ns ); ?>
 			</label>
 			<br />
 			<?php
@@ -402,7 +402,7 @@ class LazyLoadXTSettings {
 			?>
 			<label for="lazyloadxt_forceLoad">
 				<input type='checkbox' id='lazyloadxt_forceLoad' name='lazyloadxt_advanced[lazyloadxt_forceLoad]' <?php $this->checked_r( $options, 'lazyloadxt_forceLoad', 1 ); ?> value="1">
-				<?php _e( 'Force load', $this->ns ); ?>
+				<?php _e( 'Force load', self::ns ); ?>
 			</label>
 			<br />
 			<?php /*
