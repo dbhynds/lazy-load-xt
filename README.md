@@ -15,19 +15,21 @@ Lazy load images, YouTube and Vimeo videos, and iframes using [Lazy Load XT](htt
 
 Lazy Load XT is the fastest, lightest, fully customizable lazy load plugin in the WordPress Plugin Directory.
 
-This plugin works by loading the Lazy Load XT script and replacing the `src` attributes with `data-src` when the content of a post or page is loaded on the front end of a WordPress site.
+Lazy loading means that users only download media if that media is visible on the screen of their device. This way, users only have to spend costly time and energy downloading the resources that they actually need, making your site faster, lighter and more sustainable. Learn more about [sustainability and the web](http://sustainablewebdesign.org).
 
 [View Lazy Load XT on WordPress.org.](https://wordpress.org/plugins/lazy-load-xt/)
 
 ## Installation
 
 1. Install and activate the plugin through the 'Plugins' menu in WordPress
+2. Navigate to "Settings > Lazy Load XT" and configure the plugin
 
 or
 
 1. Download and unzip Lazy Load XT.
 2. Upload the `lazy-load-xt` folder to the `/wp-content/plugins/` directory
 3. Activate the plugin through the 'Plugins' menu in WordPress
+4. Navigate to "Settings > Lazy Load XT" and configure the plugin
 
 ## Frequently Asked Questions
 
@@ -39,6 +41,10 @@ For example, if a theme has:
 `echo wp_get_attachment_image($id);`
 Changing it to the following would lazy load the image:
 `echo lazyloadxt_filter_html( wp_get_attachment_image($id) );`
+
+### Why aren't videos on my site lazy loading?
+
+Make sure that you have the "Lazy load YouTube and Vimeo videos, iframes, audio, etc." checked the settings page. If you do and you're still experiencing problems, [let me know](https://wordpress.org/support/plugin/lazy-load-xt).
 
 ## Changelog
 
