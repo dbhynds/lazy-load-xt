@@ -78,6 +78,7 @@ class LazyLoadXT {
 				'cdn',
 				'footer',
 				'load_extras',
+				'responsive',
 				'thumbnails',
 				'avatars',
 				'textwidgets',
@@ -161,6 +162,11 @@ class LazyLoadXT {
 		} else {
 			wp_enqueue_script( 'lazy-load-xt-script', $script_url_pre.$min.'.js', array( 'jquery' ), $this->lazyloadxt_ver, $footer );
 		}
+		
+		// Enqueue extras enabled. Otherwise, load the regular script
+		if ( $this->settings['responsive'] ) {
+			wp_enqueue_script( 'lazy-load-xt-bg', $this->dir.'js/'.$jqll.'.srcset'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
+		}
 
 		if ( $this->settings['script_based_tagging'] ) {
 			wp_enqueue_script( 'lazy-load-xt-bg', $this->dir.'js/'.$jqll.'.script'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
@@ -213,8 +219,11 @@ class LazyLoadXT {
 		$search = array();
 		$replace = array();
 
+		$attrs_array = array('src','poster');
+		if ($this->settings['responsive']) array_push($attrs_array, 'srcset');
+
 		// Attributes to search for
-		$attrs = implode('|',array('src','poster'));
+		$attrs = implode('|',$attrs_array);
 		// Elements requiring a 'src' attribute to be valide HTML
 		$src_req = array('img','video');
 
