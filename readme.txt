@@ -40,6 +40,9 @@ Changing it to the following would lazy load the image:
 
 == Changelog ==
 
+= 0.5.0 =
+* Implemented srcset for attribute for WP 4.4
+
 = 0.4.1 =
 * Tweaked regex for iframes
 * Fixed operators on settings class
