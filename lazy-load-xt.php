@@ -111,7 +111,7 @@ class LazyLoadXT {
 		}
 
 		// If enabled, set the advanced settings to an array
-		if (array_key_exists('lazyloadxt_enabled', $advanced) && $advanced['lazyloadxt_enabled']) {
+		if ($advanced && array_key_exists('lazyloadxt_enabled', $advanced) && $advanced['lazyloadxt_enabled']) {
 			foreach ($advanced as $key => $val) {
 				if ( $key != 'lazyloadxt_enabled' ) {
 					$settings['advanced'][str_replace('lazyloadxt_','',$key)] = $val;
