@@ -233,10 +233,10 @@ class LazyLoadXT {
 			// Is the tag self closing?
 			$self_closing = in_array($tag, array('img','embed','source'));
 			// Set tag end, depending of if it's self-closing
-			$tag_end = ($self_closing) ? '\/' : '\/'.$tag;
+			$tag_end = ($self_closing) ? '\/' : '<\/'.$tag;
 
 			// Look for tag in content
-			preg_match_all('/<'.$tag.'[\s\r\n]([^<]+)'.$tag_end.'>(?!<noscript>|<\/noscript>)/is',$content,$matches);
+			preg_match_all('/<'.$tag.'[\s\r\n]([^<]+)('.$tag_end.'>)(?!<noscript>|<\/noscript>)/is',$content,$matches);
 
 			// If tags exist, loop through them and replace stuff
 			if (count($matches[0])) {
@@ -299,4 +299,3 @@ function get_lazyloadxt_html($html = '') {
 	global $lazyloadxt;
 	return $lazyloadxt->filter_html($html);
 }
-
