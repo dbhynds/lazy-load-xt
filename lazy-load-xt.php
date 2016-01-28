@@ -165,11 +165,11 @@ class LazyLoadXT {
     
     // Enqueue extras enabled. Otherwise, load the regular script
     if ( $this->settings['responsive'] ) {
-      wp_enqueue_script( 'lazy-load-xt-bg', $this->dir.'js/'.$jqll.'.srcset'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
+      wp_enqueue_script( 'lazy-load-xt-srcset', $this->dir.'js/'.$jqll.'.srcset'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
     }
 
     if ( $this->settings['script_based_tagging'] ) {
-      wp_enqueue_script( 'lazy-load-xt-bg', $this->dir.'js/'.$jqll.'.script'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
+      wp_enqueue_script( 'lazy-load-xt-script-based', $this->dir.'js/'.$jqll.'.script'.$min.'.js', array( 'jquery','lazy-load-xt-script' ), $this->lazyloadxt_ver );
     }
     /*if ( $this->settings['responsive_images'] ) {
     }*/

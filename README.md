@@ -42,6 +42,10 @@ Changing it to the following would lazy load the image:
 
 ## Changelog
 
+### 0.5.1
+* Fixed error for older versions of PHP
+* Fixed incorrect script being loaded for background images
+
 ### 0.5.0
 * Implemented srcset attribute for WP 4.4
 

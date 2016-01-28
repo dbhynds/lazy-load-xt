@@ -2,8 +2,8 @@
 Contributors: dbhynds
 Tags: Lazy Load, Lazy Load XT, iframe, image, media, video, YouTube, Vimeo
 Requires at least: 3.1
-Tested up to: 4.4
-Stable tag: 0.5.0
+Tested up to: 4.4.1
+Stable tag: 0.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,10 @@ Changing it to the following would lazy load the image:
 `echo get_lazyloadxt_html( wp_get_attachment_image($id) );`
 
 == Changelog ==
+
+= 0.5.1 =
+* Fixed error for older versions of PHP
+* Fixed incorrect script being loaded for background images
 
 = 0.5.0 =
 * Implemented srcset attribute for WP 4.4
