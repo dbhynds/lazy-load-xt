@@ -1,7 +1,7 @@
 <?php
 /**
  * @package Lazy_Load_XT
- * @version 0.5.0
+ * @version 0.5.3
  */
 /*
 Plugin Name: Lazy Load XT
@@ -9,7 +9,7 @@ Plugin URI: http://wordpress.org/plugins/lazy-load-xt/
 Description: Lazy Load XT is the fastest, lightest, fully customizable lazy load plugin in the WordPress Plugin Directory. Lazy load images, YouTube and Vimeo videos, and iframes using <a href="https://github.com/ressio/lazy-load-xt" target="_blank">Lazy Load XT</a>.
 Author: Davo Hynds
 Author URI: http://www.mightybytes.com/
-Version: 0.5.0
+Version: 0.5.3
 Text Domain: lazy-load-xt
 */
 
@@ -27,7 +27,7 @@ class LazyLoadXT {
     
     // If we're in the admin area, load the settings class
     if (is_admin()) {
-      require 'settings.php';
+      require dirname(__FILE__).'/settings.php';
       $settingsClass = new LazyLoadXTSettings;
       // If this is the first time we've enabled the plugin, setup default settings
       register_activation_hook(__FILE__,array($settingsClass,'first_time_activation'));

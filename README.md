@@ -42,6 +42,12 @@ Changing it to the following would lazy load the image:
 
 ## Changelog
 
+### 0.5.3
+* Fix multisite activation error
+
+### 0.5.2
+* Actually fixed the error for older versions of PHP
+
 ### 0.5.1
 * Fixed error for older versions of PHP
 * Fixed incorrect script being loaded for background images

@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class LazyLoadXTSettings {
 
-  const ver = '0.5.0'; // Plugin version
+  const ver = '0.5.3'; // Plugin version
   const ns = 'lazy-load-xt';
   protected $defaults = array(
     'general' => array(
@@ -105,7 +105,7 @@ class LazyLoadXTSettings {
     wp_enqueue_script('thickbox');
   }
   function lazyloadxt_action_links( $links ) {
-    $links[] = '<a href="options-general.php?page=lazyloadxt">'.__('Settings', self::ns).'</a>';
+    $links[] = '<a href="options-general.php?page=lazyloadxt">'.__('Settings',self::ns).'</a>';
     return $links;
   }
 
