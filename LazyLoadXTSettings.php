@@ -1,10 +1,11 @@
 <?php
 
+namespace LazyLoadXT;
+
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class LazyLoadXTSettings {
 
-  const ver = '0.5.3'; // Plugin version
   const ns = 'lazy-load-xt';
   protected $defaults = array(
     'general' => array(
@@ -18,15 +19,24 @@ class LazyLoadXTSettings {
       'lazyloadxt_responsive' => 1,
     ),
   );
+  private $version;
 
-  public function __construct() {
+  function __construct() {
+    add_action( 'wp', array($this,'set_version') );
     add_action( 'admin_menu', array($this,'lazyloadxt_add_admin_menu') );
     add_action( 'admin_init', array($this,'lazyloadxt_settings_init') );
     add_action( 'admin_enqueue_scripts', array($this,'lazyloadxt_enqueue_admin') );
     add_action( 'upgrader_process_complete', array($this,'update') );
   }
 
-  function first_time_activation() {
+  public function set_version()
+  {
+    $plugin_data = \get_plugin_data(__FILE__);
+    $this->version = $plugin_data['Version'];
+  }
+
+  public function first_time_activation()
+  {
     // Set default settings
     $defaults = $this->defaults;
     foreach ($defaults as $key => $val) {
@@ -34,7 +44,7 @@ class LazyLoadXTSettings {
         update_option('lazyloadxt_'.$key,$val);
       }
     }
-    update_option('lazyloadxt_version',self::ver);
+    update_option('lazyloadxt_version',$this->version);
   }
 
   /**
@@ -42,8 +52,8 @@ class LazyLoadXTSettings {
    *
    * @since Lazy Load XT 0.3.0
    */
-  function upgrade($to) {
-    error_log($to);
+  private function upgrade($to)
+  {
     if (version_compare($dbver,'0.2','<=')) {
       $this->first_time_activation();
     }
@@ -55,7 +65,6 @@ class LazyLoadXTSettings {
     if (version_compare($to,'0.5.0','<=')) {
       $general = get_option('lazyloadxt_general');
       $general['lazyloadxt_responsive'] = $this->defaults['general']['lazyloadxt_responsive'];
-      error_log($this->defaults['general']['lazyloadxt_responsive']);
       update_option('lazyloadxt_general',$general);
     }
     if (version_compare($to,'1.0','<=')) {
@@ -65,22 +74,24 @@ class LazyLoadXTSettings {
     }
   }
   
-  function update() {
+  public function update()
+  {
     $defaults = $this->defaults;
-    $ver = self::ver;
-    $dbver = get_option('lazyloadxt_version','');
-    if (version_compare($ver,$dbver,'>')) {
-      if (version_compare($dbver,'0.2','<=')) {
+    $version = $this->version;
+    $db_version = get_option('lazyloadxt_version','');
+    if (version_compare($version,$db_version,'>')) {
+      if (version_compare($db_version,'0.2','<=')) {
         $this->first_time_activation();
-      } elseif (version_compare($dbver,'0.3','<=')) {
+      } elseif (version_compare($db_version,'0.3','<=')) {
         $this->upgrade('0.3');
       }
-      update_option('lazyloadxt_version',$ver);
+      update_option('lazyloadxt_version',$version);
     }
   }
 
 
-  function lazyloadxt_add_admin_menu() { 
+  public function lazyloadxt_add_admin_menu()
+  { 
     $admin_page = add_options_page( 'Lazy Load XT', 'Lazy Load XT', 'manage_options', 'lazyloadxt', array($this,'settings_page') );
   }
   function lazyloadxt_enqueue_admin() {
@@ -96,7 +107,8 @@ class LazyLoadXTSettings {
    *
    * @since Lazy Load XT 0.3.0
    */
-  function ask_for_feedback() {
+  public function ask_for_feedback()
+  {
     ?>
     <div class="updated">
         <p><?php _e( 'Help improve Lazy Load XT: <a href="https://wordpress.org/support/plugin/lazy-load-xt" target="_blank">submit feedback, questions, and bug reports</a>.', self::ns ); ?></p>
@@ -109,7 +121,8 @@ class LazyLoadXTSettings {
     return $links;
   }
 
-  function lazyloadxt_settings_init() {
+  public function lazyloadxt_settings_init()
+  {
 
     register_setting( 'basicSettings', 'lazyloadxt_general' );
     register_setting( 'basicSettings', 'lazyloadxt_effects' );
@@ -154,7 +167,8 @@ class LazyLoadXTSettings {
    *
    * @since Lazy Load XT 0.1.0
    */
-  function lazyloadxt_general_render() {
+  public function lazyloadxt_general_render()
+  {
 
     $options = get_option( 'lazyloadxt_general' );
     ?>
@@ -227,7 +241,8 @@ class LazyLoadXTSettings {
    *
    * @since Lazy Load XT 0.1.0
    */
-  function lazyloadxt_effects_render() {
+  public function lazyloadxt_effects_render()
+  {
 
     $options = get_option( 'lazyloadxt_effects' );
     ?>
@@ -254,7 +269,8 @@ class LazyLoadXTSettings {
    *
    * @since Lazy Load XT 0.1.0
    */
-  function lazyloadxt_addons_render() {
+  public function lazyloadxt_addons_render()
+  {
 
     $options = get_option( 'lazyloadxt_addons' ); ?>
     <fieldset>
@@ -292,7 +308,8 @@ class LazyLoadXTSettings {
    *
    * @since Lazy Load XT 0.5.0
    */
-  function lazyloadxt_advanced_render() {
+  public function lazyloadxt_advanced_render()
+  {
 
     $options = get_option( 'lazyloadxt_advanced' ); ?>
     <fieldset>
@@ -351,7 +368,8 @@ class LazyLoadXTSettings {
    *
    * @since Lazy Load XT 0.1.0
    */
-  function lazyloadxt_basic_section_callback() { 
+  public function lazyloadxt_basic_section_callback()
+  { 
     _e( 'Customize the basic features of Lazy Load XT.', self::ns );
   }
 
@@ -361,7 +379,8 @@ class LazyLoadXTSettings {
    *
    * @since Lazy Load XT 0.1.0
    */
-  function settings_page() { 
+  public function settings_page()
+  { 
 
     ?>
     <div class="wrap">
@@ -377,8 +396,9 @@ class LazyLoadXTSettings {
     <?php
 
   }
-
-  function checked_r($option, $key, $current = true, $echo = true) {
+  
+  private function checked_r($option, $key, $current = true, $echo = true)
+  {
     if (is_array($option) && array_key_exists($key, $option)) {
       checked( $option[$key],$current,$echo );
     }

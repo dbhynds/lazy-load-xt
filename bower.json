@@ -1,0 +1,11 @@
+{
+  "name": "wp-lazy-load-xt",
+  "homepage": "https://wordpress.org/plugins/lazy-load-xt/",
+  "authors": [
+    "Davo Hynds <davo@davohynds.com>"
+  ],
+  "license": "GNU",
+  "dependencies": {
+    "lazyloadxt": "latest"
+  }
+}
